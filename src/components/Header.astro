@@ -1,27 +1,24 @@
 ---
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
 import LanguagePicker from './LanguagePicker.astro';
-import { ThemeToggle } from './ThemeToggle';
 import { Search } from 'lucide-react';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 ---
-<header class="border-b border-[var(--color-border)] bg-[var(--color-background)]/80 backdrop-blur-md sticky top-0 z-40">
+<header class="border-b border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-950/80 backdrop-blur-md sticky top-0 z-40">
     <div class="container mx-auto px-4 h-16 flex items-center justify-between max-w-6xl">
         <a href={`/${lang}/`} class="text-xl font-bold tracking-tight flex items-center gap-2 group">
-            <span class="bg-gradient-to-tr from-[var(--color-primary)] to-cyan-500 bg-clip-text text-transparent group-hover:opacity-80 transition-opacity">NanoKito</span>
+            <span class="bg-gradient-to-tr from-blue-600 to-cyan-500 bg-clip-text text-transparent group-hover:opacity-80 transition-opacity">NanoKito</span>
         </a>
 
         <div class="flex items-center gap-3 md:gap-4">
              {/* Search Trigger (Functionality can be added later, e.g. open Nanostores modal) */}
-             <button class="p-2 text-[var(--color-muted-foreground)] hover:bg-[var(--color-accent)] rounded-lg transition-colors" aria-label="Search">
+             <button class="p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors" aria-label="Search">
                 <Search className="w-5 h-5" />
              </button>
              
-             <div class="h-6 w-px bg-[var(--color-border)]"></div>
-
-             <ThemeToggle client:load />
+             <div class="h-6 w-px bg-gray-200 dark:bg-gray-800"></div>
              
              <LanguagePicker />
         </div>

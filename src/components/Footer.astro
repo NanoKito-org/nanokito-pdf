@@ -5,17 +5,17 @@ const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const year = new Date().getFullYear();
 ---
-<footer class="border-t border-[var(--color-border)] bg-[var(--color-background)] py-10 mt-auto">
+<footer class="border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 py-10 mt-auto">
     <div class="container mx-auto px-4 max-w-6xl">
         <div class="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div class="text-sm text-[var(--color-muted-foreground)]">
+            <div class="text-sm text-gray-500 dark:text-gray-400">
                 <p>&copy; {year} NanoKito. All rights reserved.</p>
             </div>
             
             <div class="flex flex-wrap justify-center items-center gap-6 text-sm font-medium">
-                <a href="#" class="text-[var(--color-secondary-foreground)] hover:text-[var(--color-primary)] transition-colors">{t('footer.privacy')}</a>
-                <a href="#" class="text-[var(--color-secondary-foreground)] hover:text-[var(--color-primary)] transition-colors">{t('footer.about')}</a>
-                <a href="#" class="inline-flex items-center gap-2 px-4 py-2 bg-yellow-400/10 text-yellow-600 dark:text-yellow-400 rounded-full hover:bg-yellow-400/20 transition-colors">
+                <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('footer.privacy')}</a>
+                <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('footer.about')}</a>
+                <a href="#" class="inline-flex items-center gap-2 px-4 py-2 bg-yellow-400/10 text-yellow-700 dark:text-yellow-400 rounded-full hover:bg-yellow-400/20 transition-colors">
                    ☕ {t('footer.coffee')}
                 </a>
             </div>

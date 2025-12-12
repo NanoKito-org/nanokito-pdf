@@ -11,20 +11,20 @@ interface Props {
 
 const { title, description, href, category } = Astro.props;
 ---
-<a href={href} class="group relative bg-[var(--color-card)] border border-[var(--color-border)] rounded-xl p-6 hover:shadow-xl hover:shadow-[var(--color-primary)]/5 hover:border-[var(--color-primary)]/30 transition-all duration-300 flex flex-col h-full overflow-hidden">
+<a href={href} class="group relative bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6 hover:shadow-xl hover:shadow-blue-500/5 hover:border-blue-500/30 transition-all duration-300 flex flex-col h-full overflow-hidden">
     
-    <div class="mb-4 inline-flex p-3 rounded-lg bg-[var(--color-primary)]/10 text-[var(--color-primary)] group-hover:scale-110 transition-transform duration-300 w-fit">
+    <div class="mb-4 inline-flex p-3 rounded-lg bg-blue-50 dark:bg-blue-900/10 text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform duration-300 w-fit">
         <slot name="icon" />
     </div>
     
     <div class="mb-2">
-        <span class="text-xs font-bold uppercase tracking-wider text-[var(--color-muted-foreground)]">{category}</span>
-        <h3 class="text-xl font-bold text-[var(--color-card-foreground)] group-hover:text-[var(--color-primary)] transition-colors mt-1">{title}</h3>
+        <span class="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">{category}</span>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors mt-1">{title}</h3>
     </div>
     
-    <p class="text-[var(--color-secondary-foreground)] text-sm flex-1 mb-6 leading-relaxed">{description}</p>
+    <p class="text-gray-600 dark:text-gray-400 text-sm flex-1 mb-6 leading-relaxed">{description}</p>
     
-    <div class="flex items-center text-sm font-medium text-[var(--color-primary)] opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 mt-auto">
+    <div class="flex items-center text-sm font-medium text-blue-600 dark:text-blue-400 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 mt-auto">
         Try now <ArrowRight className="w-4 h-4 ml-1" />
     </div>
 </a>

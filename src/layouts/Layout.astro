@@ -5,8 +5,6 @@ import '../styles/global.css';
 import { getLangFromUrl } from '../i18n/utils';
 
 
-import ThemeScript from '../components/ThemeScript.astro';
-
 interface Props {
 	title: string;
     description?: string;
@@ -24,7 +22,6 @@ const { title, description = "Privacy-First Tools. No Server Uploads." } = Astro
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
-        <ThemeScript />
 		<title>{title} | NanoKito</title>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
