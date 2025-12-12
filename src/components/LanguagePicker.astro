@@ -1,0 +1,41 @@
+---
+import { languages } from '../i18n/ui';
+import { getLangFromUrl } from '../i18n/utils';
+import { Globe } from 'lucide-react';
+
+const lang = getLangFromUrl(Astro.url);
+const currentPath = Astro.url.pathname;
+
+function getPathForLang(l: string) {
+    const parts = currentPath.split('/');
+    // parts[0] is empty, parts[1] is lang
+    // Replace parts[1] with new lang
+    const newParts = [...parts];
+    if (newParts.length > 1) {
+        newParts[1] = l;
+    } else {
+        // Edge case, root or weird path
+        return `/${l}/`;
+    }
+    return newParts.join('/');
+}
+---
+
+<div class="relative group z-50">
+  <button class="flex items-center gap-2 p-2 rounded-md hover:bg-[var(--color-accent)] text-[var(--color-foreground)] transition-colors" aria-label="Change Language">
+     <Globe className="w-5 h-5" />
+     <span class="uppercase font-medium text-sm">{lang}</span>
+  </button>
+  
+  <div class="absolute right-0 top-full mt-2 w-32 bg-[var(--color-card)] rounded-lg shadow-xl border border-[var(--color-border)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 trnasform origin-top-right">
+      <ul class="py-1">
+         {Object.entries(languages).map(([key, label]) => (
+            <li>
+                <a href={getPathForLang(key)} class={`block px-4 py-2 text-sm hover:bg-[var(--color-accent)] ${key === lang ? 'font-bold text-[var(--color-primary)]' : 'text-[var(--color-foreground)]'}`}>
+                    {label}
+                </a>
+            </li>
+         ))}
+      </ul>
+  </div>
+</div>
