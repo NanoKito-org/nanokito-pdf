@@ -1,0 +1,147 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import { tools, categoryLabels, type ToolCategory } from "../../../data/tools";
+import ToolCard from "../../../components/ToolCard.astro";
+import {
+  Search,
+  Code,
+  Image,
+  FileText,
+  File,
+  ChevronRight,
+  Home,
+} from "lucide-react";
+import { getLangFromUrl, useTranslations } from "../../../i18n/utils";
+import CategoryBadge from "../../../components/CategoryBadge.astro";
+import { Braces, Fingerprint, RefreshCw, Type, Lock } from "lucide-react";
+
+export function getStaticPaths() {
+  const langs = ["en", "fr"];
+  const categories: ToolCategory[] = ["developer", "image", "text", "pdf"];
+
+  return langs.flatMap((lang) =>
+    categories.map((category) => ({
+      params: { lang, category },
+    })),
+  );
+}
+
+const { lang, category } = Astro.params;
+const currentCategory = category as ToolCategory;
+const t = useTranslations(lang as "en" | "fr");
+
+const categoryName = categoryLabels[currentCategory][lang as "en" | "fr"];
+const categoryTools = tools.filter((tool) => tool.category === currentCategory);
+
+// Icon map helper
+const iconMap: Record<string, any> = {
+  Code,
+  Braces,
+  Fingerprint,
+  Image,
+  RefreshCw,
+  FileText,
+  Type,
+  File,
+  Lock,
+};
+
+const breadcrumbs = [
+  { label: t("nav.home"), href: `/${lang}` },
+  { label: t("nav.tools"), href: `/${lang}/tools` },
+  { label: categoryName, href: `/${lang}/tools/${category}`, active: true },
+];
+---
+
+<Layout
+  title={`${categoryName} ${t("tools.categoryTitleSuffix")} | NanoKito`}
+  description={`Best privacy-first ${categoryName} tools. No server uploads.`}
+>
+  <div class="container mx-auto px-4 py-12 max-w-6xl">
+    {/* Breadcrumbs */}
+    <nav class="flex mb-8 text-sm text-gray-500 dark:text-gray-400">
+      <ol class="flex items-center space-x-2">
+        <li>
+          <a
+            href={breadcrumbs[0].href}
+            class="hover:text-[var(--color-primary)] transition-colors"
+          >
+            <Home className="w-4 h-4" />
+          </a>
+        </li>
+        <ChevronRight className="w-4 h-4" />
+        <li>
+          <a
+            href={breadcrumbs[1].href}
+            class="hover:text-[var(--color-primary)] transition-colors"
+          >
+            {t("nav.tools")}
+          </a>
+        </li>
+        <ChevronRight className="w-4 h-4" />
+        <li>
+          <span class="text-[var(--color-foreground)] font-medium">
+            {categoryName}
+          </span>
+        </li>
+      </ol>
+    </nav>
+
+    {/* Page Header */}
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-bold text-[var(--color-foreground)] mb-4">
+        {categoryName}
+        {t("tools.categoryTitleSuffix")}
+      </h1>
+      <p class="text-[var(--color-muted-foreground)] text-lg max-w-2xl mx-auto">
+        {t("tools.categoryDescriptionPrefix")}
+        {categoryName.toLowerCase()}
+        {t("tools.categoryDescriptionSuffix")}
+      </p>
+    </div>
+
+    {/* Filter Pills (To switch categories easily) */}
+    <div class="flex flex-wrap justify-center gap-2 mb-12">
+      <a href={`/${lang}/tools`} class="no-underline">
+        <CategoryBadge
+          class="px-4 py-1.5 text-sm cursor-pointer hover:bg-slate-700 hover:text-white"
+        >
+          {t("tools.filterAll")}
+        </CategoryBadge>
+      </a>
+      {
+        ["developer", "image", "text", "pdf"].map((cat) => (
+          <a href={`/${lang}/tools/${cat}`} class="no-underline">
+            <CategoryBadge
+              active={cat === category}
+              class={`px-4 py-1.5 text-sm cursor-pointer ${cat !== category ? "hover:bg-slate-700 hover:text-white" : ""}`}
+            >
+              {categoryLabels[cat as ToolCategory][lang as "en" | "fr"]}
+            </CategoryBadge>
+          </a>
+        ))
+      }
+    </div>
+
+    {/* Tools Grid */}
+    <div
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+    >
+      {
+        categoryTools.map((tool) => {
+          const Icon = iconMap[tool.icon] || Code;
+          return (
+            <ToolCard
+              title={tool.title[lang as string]}
+              description={tool.description[lang as string]}
+              href={`/${lang}/tools/${tool.slug}`}
+              category={categoryName}
+            >
+              <Icon slot="icon" className="w-6 h-6" />
+            </ToolCard>
+          );
+        })
+      }
+    </div>
+  </div>
+</Layout>

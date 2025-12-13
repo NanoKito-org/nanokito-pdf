@@ -1,0 +1,104 @@
+---
+import Layout from "./Layout.astro";
+import { ChevronRight, Home } from "lucide-react";
+import { useTranslations } from "../i18n/utils";
+
+interface Props {
+  title: string;
+  description: string;
+  toolName: string;
+  category: string;
+  categorySlug: string; // e.g., 'developer' for linking
+  lang: "en" | "fr";
+}
+
+const { title, description, toolName, category, lang, categorySlug } =
+  Astro.props;
+const t = useTranslations(lang);
+
+const breadcrumbs = [
+  { label: t("nav.home"), href: `/${lang}` },
+  { label: t("nav.tools"), href: `/${lang}/tools` },
+  { label: category, href: `/${lang}/tools/${categorySlug}` },
+  { label: toolName, href: "#", active: true },
+];
+---
+
+<Layout title={title} description={description}>
+  <div class="container mx-auto px-4 py-12 max-w-4xl">
+    {/* Breadcrumbs */}
+    <nav class="flex mb-8 text-sm text-gray-500 dark:text-gray-400">
+      <ol class="flex items-center space-x-2 flex-wrap">
+        <li>
+          <a
+            href={breadcrumbs[0].href}
+            class="hover:text-[var(--color-primary)] transition-colors"
+          >
+            <Home className="w-4 h-4" />
+          </a>
+        </li>
+        <ChevronRight className="w-4 h-4" />
+        <li>
+          <a
+            href={breadcrumbs[1].href}
+            class="hover:text-[var(--color-primary)] transition-colors"
+          >
+            {breadcrumbs[1].label}
+          </a>
+        </li>
+        <ChevronRight className="w-4 h-4" />
+        <li>
+          <a
+            href={breadcrumbs[2].href}
+            class="hover:text-[var(--color-primary)] transition-colors"
+          >
+            {breadcrumbs[2].label}
+          </a>
+        </li>
+        <ChevronRight className="w-4 h-4" />
+        <li>
+          <span class="text-[var(--color-foreground)] font-medium">
+            {toolName}
+          </span>
+        </li>
+      </ol>
+    </nav>
+
+    {/* Tool Header */}
+    <div class="mb-10 text-center md:text-left">
+      <h1
+        class="text-4xl md:text-5xl font-bold text-[var(--color-foreground)] mb-4 inline-block relative"
+      >
+        {toolName}
+        <span
+          class="absolute bottom-1 left-0 w-full h-3 bg-yellow-400/20 -z-10 rounded-sm"
+        ></span>
+      </h1>
+      <p class="text-xl text-[var(--color-muted-foreground)] mt-2">
+        {description}
+      </p>
+    </div>
+
+    {/* The Workspace (Interactive Tool Area) */}
+    <div
+      class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-slate-800 p-6 md:p-8 mb-16 relative overflow-hidden"
+    >
+      {/* Decorative background accent */}
+      <div
+        class="absolute top-0 right-0 w-64 h-64 bg-yellow-400/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"
+      >
+      </div>
+
+      <div class="relative z-10">
+        <slot />
+      </div>
+    </div>
+
+    {/* SEO / Instructions Content */}
+    <article
+      class="prose prose-lg dark:prose-invert max-w-none prose-headings:text-[var(--color-foreground)] prose-a:text-[var(--color-primary)]"
+    >
+      <slot name="content" />
+    </article>
+  </div>
+</Layout>

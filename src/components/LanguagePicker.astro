@@ -1,13 +1,13 @@
 ---
-import { languages } from '../i18n/ui';
-import { getLangFromUrl } from '../i18n/utils';
-import { Globe } from 'lucide-react';
+import { languages } from "../i18n/ui";
+import { getLangFromUrl } from "../i18n/utils";
+import { Globe } from "lucide-react";
 
 const lang = getLangFromUrl(Astro.url);
 const currentPath = Astro.url.pathname;
 
 function getPathForLang(l: string) {
-    const parts = currentPath.split('/');
+    const parts = currentPath.split("/");
     // parts[0] is empty, parts[1] is lang
     // Replace parts[1] with new lang
     const newParts = [...parts];
@@ -17,25 +17,35 @@ function getPathForLang(l: string) {
         // Edge case, root or weird path
         return `/${l}/`;
     }
-    return newParts.join('/');
+    return newParts.join("/");
 }
 ---
 
 <div class="relative group z-50">
-  <button class="flex items-center gap-2 p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 transition-colors" aria-label="Change Language">
-     <Globe className="w-5 h-5" />
-     <span class="uppercase font-medium text-sm">{lang}</span>
-  </button>
-  
-  <div class="absolute right-0 top-full mt-2 w-32 bg-white dark:bg-gray-900 rounded-lg shadow-xl border border-gray-200 dark:border-gray-800 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 trnasform origin-top-right">
-      <ul class="py-1">
-         {Object.entries(languages).map(([key, label]) => (
-            <li>
-                <a href={getPathForLang(key)} class={`block px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-800 ${key === lang ? 'font-bold text-blue-600' : 'text-gray-700 dark:text-gray-300'}`}>
-                    {label}
-                </a>
-            </li>
-         ))}
-      </ul>
-  </div>
+    <button
+        class="flex items-center gap-2 p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 transition-colors cursor-pointer"
+        aria-label="Change Language"
+    >
+        <Globe className="w-5 h-5" />
+        <span class="uppercase font-medium text-sm">{lang}</span>
+    </button>
+
+    <div
+        class="absolute right-0 top-full mt-2 w-32 bg-white dark:bg-gray-900 rounded-lg shadow-xl border border-gray-200 dark:border-gray-800 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 trnasform origin-top-right"
+    >
+        <ul class="py-1">
+            {
+                Object.entries(languages).map(([key, label]) => (
+                    <li>
+                        <a
+                            href={getPathForLang(key)}
+                            class={`block px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-800 ${key === lang ? "font-bold text-blue-600" : "text-gray-700 dark:text-gray-300"}`}
+                        >
+                            {label}
+                        </a>
+                    </li>
+                ))
+            }
+        </ul>
+    </div>
 </div>
