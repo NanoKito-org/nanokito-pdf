@@ -1,0 +1,666 @@
+---
+import {
+  Upload,
+  FileText,
+  Download,
+  Trash2,
+  Settings,
+  AlertTriangle,
+  CheckCircle,
+  Loader2,
+  Minimize2,
+} from "lucide-react";
+
+interface Props {
+  labels?: {
+    uploadTitle?: string;
+    uploadDesc?: string;
+    dropTitle?: string;
+    processing?: string;
+    download?: string;
+    downloadAll?: string;
+    settings?: string;
+    quality?: string;
+    grayscale?: string;
+    grayscaleDesc?: string;
+    warningTitle?: string;
+    warningDesc?: string;
+  };
+}
+
+const {
+  labels = {
+    uploadTitle: "Compress PDF Files",
+    uploadDesc: "Drag & drop PDF files here, or click to select",
+    dropTitle: "Drop to Add",
+    processing: "Processing...",
+    download: "Download",
+    downloadAll: "Download All ZIP",
+    settings: "Compression Settings",
+    quality: "Compression Level",
+    grayscale: "Grayscale (B&W)",
+    grayscaleDesc: "Converts to black & white for maximum reduction",
+    warningTitle: "Visual Compression Mode",
+    warningDesc:
+      "This tool optimizes PDFs by converting pages to compressed images. Text will no longer be selectable/searchable.",
+  },
+} = Astro.props;
+---
+
+<div class="w-full max-w-4xl mx-auto space-y-8">
+  <!-- Warning Banner -->
+  <div
+    class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50 rounded-xl p-4 flex gap-3 items-start animate-fade-up"
+  >
+    <AlertTriangle
+      className="w-5 h-5 text-amber-600 dark:text-amber-500 flex-shrink-0 mt-0.5"
+    />
+    <div>
+      <h3 class="font-bold text-amber-800 dark:text-amber-400 text-sm mb-1">
+        {labels.warningTitle}
+      </h3>
+      <p
+        class="text-sm text-amber-700 dark:text-amber-300/80 leading-relaxed max-w-2xl"
+      >
+        {labels.warningDesc}
+      </p>
+    </div>
+  </div>
+
+  <div
+    class="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade-up [animation-delay:100ms]"
+  >
+    <!-- Left Column: Settings & Upload -->
+    <div class="lg:col-span-1 space-y-6">
+      <!-- Settings Panel -->
+      <div
+        class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm"
+      >
+        <div
+          class="flex items-center gap-2 mb-4 pb-3 border-b border-slate-100 dark:border-slate-800"
+        >
+          <Settings className="w-4 h-4 text-slate-500" />
+          <h2 class="font-bold text-slate-700 dark:text-slate-200">
+            {labels.settings}
+          </h2>
+        </div>
+
+        <div class="space-y-5">
+          <!-- Quality Selector -->
+          <div class="space-y-3">
+            <label
+              class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"
+            >
+              {labels.quality}
+            </label>
+            <div class="grid grid-cols-1 gap-2">
+              <label
+                class="relative flex items-center p-3 rounded-xl border cursor-pointer transition-all hover:bg-slate-50 dark:hover:bg-slate-800/50 group quality-option active ring-2 ring-amber-500 border-amber-500 bg-slate-50 dark:bg-slate-800"
+              >
+                <input
+                  type="radio"
+                  name="compression"
+                  value="standard"
+                  class="hidden"
+                  checked
+                />
+                <div class="flex-1">
+                  <div
+                    class="font-bold text-slate-700 dark:text-slate-200 text-sm"
+                  >
+                    Standard
+                  </div>
+                  <div class="text-xs text-slate-500 dark:text-slate-400">
+                    Recommended balance
+                  </div>
+                </div>
+                <div
+                  class="w-4 h-4 rounded-full border-2 border-slate-300 dark:border-slate-600 group-[.active]:border-amber-500 group-[.active]:bg-amber-500 flex items-center justify-center"
+                >
+                  <div
+                    class="w-1.5 h-1.5 rounded-full bg-white opacity-0 group-[.active]:opacity-100"
+                  >
+                  </div>
+                </div>
+              </label>
+
+              <label
+                class="relative flex items-center p-3 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer transition-all hover:bg-slate-50 dark:hover:bg-slate-800/50 group quality-option"
+              >
+                <input
+                  type="radio"
+                  name="compression"
+                  value="extreme"
+                  class="hidden"
+                />
+                <div class="flex-1">
+                  <div
+                    class="font-bold text-slate-700 dark:text-slate-200 text-sm"
+                  >
+                    Extreme
+                  </div>
+                  <div class="text-xs text-slate-500 dark:text-slate-400">
+                    Min Size (Low Quality)
+                  </div>
+                </div>
+                <div
+                  class="w-4 h-4 rounded-full border-2 border-slate-300 dark:border-slate-600 group-[.active]:border-amber-500 group-[.active]:bg-amber-500 flex items-center justify-center"
+                >
+                  <div
+                    class="w-1.5 h-1.5 rounded-full bg-white opacity-0 group-[.active]:opacity-100"
+                  >
+                  </div>
+                </div>
+              </label>
+
+              <label
+                class="relative flex items-center p-3 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer transition-all hover:bg-slate-50 dark:hover:bg-slate-800/50 group quality-option"
+              >
+                <input
+                  type="radio"
+                  name="compression"
+                  value="high"
+                  class="hidden"
+                />
+                <div class="flex-1">
+                  <div
+                    class="font-bold text-slate-700 dark:text-slate-200 text-sm"
+                  >
+                    High Quality
+                  </div>
+                  <div class="text-xs text-slate-500 dark:text-slate-400">
+                    Better readability
+                  </div>
+                </div>
+                <div
+                  class="w-4 h-4 rounded-full border-2 border-slate-300 dark:border-slate-600 group-[.active]:border-amber-500 group-[.active]:bg-amber-500 flex items-center justify-center"
+                >
+                  <div
+                    class="w-1.5 h-1.5 rounded-full bg-white opacity-0 group-[.active]:opacity-100"
+                  >
+                  </div>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Grayscale Toggle -->
+          <div
+            class="flex items-center justify-between py-2 border-t border-slate-100 dark:border-slate-800 pt-4"
+          >
+            <div class="flex flex-col">
+              <span class="font-bold text-slate-700 dark:text-slate-200 text-sm"
+                >{labels.grayscale}</span
+              >
+              <span
+                class="text-[10px] text-slate-500 dark:text-slate-400 max-w-[150px] leading-tight mt-1"
+                >{labels.grayscaleDesc}</span
+              >
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                id="grayscale-toggle"
+                class="sr-only peer"
+              />
+              <div
+                class="w-11 h-6 bg-slate-200 peer-focus:outline-none dark:bg-slate-700 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-amber-500"
+              >
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Upload Zone -->
+      <div
+        id="pdf-drop-zone"
+        class="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl bg-slate-50/50 dark:bg-slate-900/50 p-8 flex flex-col items-center justify-center text-center cursor-pointer hover:border-amber-400 dark:hover:border-amber-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-300 group"
+      >
+        <div
+          class="p-4 rounded-full bg-white dark:bg-slate-800 group-hover:bg-amber-50 dark:group-hover:bg-amber-900/20 group-hover:scale-110 transition-all duration-300 shadow-sm mb-3"
+        >
+          <Upload
+            className="w-8 h-8 text-slate-400 group-hover:text-amber-500"
+          />
+        </div>
+        <input
+          type="file"
+          id="pdf-input"
+          accept="application/pdf"
+          multiple
+          class="hidden"
+        />
+        <h3
+          class="font-bold text-slate-700 dark:text-slate-200 mb-1 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors"
+        >
+          {labels.uploadTitle}
+        </h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400">
+          {labels.uploadDesc}
+        </p>
+      </div>
+    </div>
+
+    <!-- Right Column: List -->
+    <div class="lg:col-span-2">
+      <div id="file-list" class="space-y-4 min-h-[400px]">
+        <!-- Empty State -->
+        <div
+          id="empty-state"
+          class="h-full flex flex-col items-center justify-center text-center p-10 border-2 border-dashed border-slate-100 dark:border-slate-800 rounded-2xl"
+        >
+          <Minimize2
+            className="w-16 h-16 text-slate-200 dark:text-slate-800 mb-4"
+          />
+          <p class="text-slate-400 font-medium">No files in queue</p>
+        </div>
+      </div>
+
+      <!-- Action Bar (Appears when files exist) -->
+      <div
+        id="action-bar"
+        class="hidden mt-6 pt-6 border-t border-slate-200 dark:border-slate-800 flex justify-end"
+      >
+        <button
+          id="download-all-btn"
+          class="flex items-center gap-2 px-6 py-3 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <Download className="w-4 h-4" />
+          {labels.downloadAll}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<template id="file-item-template">
+  <div
+    class="file-item relative bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 shadow-sm hover:shadow-md transition-all"
+  >
+    <div class="flex items-start gap-4">
+      <!-- Icon -->
+      <div
+        class="p-3 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400"
+      >
+        <FileText className="w-6 h-6" />
+      </div>
+
+      <!-- Content -->
+      <div class="flex-1 min-w-0">
+        <div class="flex items-start justify-between mb-2">
+          <div>
+            <h4
+              class="font-bold text-slate-700 dark:text-slate-200 truncate pr-4 text-sm filename"
+            >
+              filename.pdf
+            </h4>
+            <div
+              class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mt-0.5"
+            >
+              <span class="original-size">2.4 MB</span>
+              <span class="arrow hidden">→</span>
+              <span
+                class="new-size hidden font-mono text-slate-900 dark:text-slate-200 font-bold"
+                >1.1 MB</span
+              >
+            </div>
+          </div>
+          <button
+            class="text-slate-400 hover:text-red-500 transition-colors remove-btn p-1"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-section mt-3">
+          <div class="flex justify-between text-xs mb-1.5">
+            <span
+              class="status-text font-medium text-amber-600 dark:text-amber-400"
+              >Waiting...</span
+            >
+            <span class="percentage text-slate-500">0%</span>
+          </div>
+          <div
+            class="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden"
+          >
+            <div
+              class="progress-bar h-full bg-amber-500 transition-all duration-300 w-0"
+            >
+            </div>
+          </div>
+        </div>
+
+        <!-- Success Actions -->
+        <div class="success-actions hidden mt-3 flex items-center gap-3">
+          <button
+            class="download-btn flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 rounded-lg text-xs font-bold hover:bg-amber-200 dark:hover:bg-amber-900/50 transition-colors"
+          >
+            <Download className="w-3.5 h-3.5" />
+            Save PDF
+          </button>
+          <div
+            class="px-3 py-2 rounded-lg bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 text-xs font-bold savings-badge"
+          >
+            -45%
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+  import {
+    compressPDF,
+    type PdfCompressionOptions,
+  } from "../../utils/pdfCompression";
+  import JSZip from "jszip";
+
+  // State
+  interface FileQueueItem {
+    id: string;
+    file: File;
+    status: "pending" | "processing" | "done" | "error";
+    originalSize: number;
+    compressedSize?: number;
+    blob?: Blob;
+    element: HTMLElement;
+  }
+
+  const queue: FileQueueItem[] = [];
+  const MAX_CONCURRENT = 1; // Process one at a time to prevent UI freezing
+  let processingCount = 0;
+
+  // DOM
+  const dropZone = document.getElementById("pdf-drop-zone");
+  const fileInput = document.getElementById("pdf-input") as HTMLInputElement;
+  const fileList = document.getElementById("file-list");
+  const emptyState = document.getElementById("empty-state");
+  const template = document.getElementById(
+    "file-item-template",
+  ) as HTMLTemplateElement;
+  const downloadAllBtn = document.getElementById(
+    "download-all-btn",
+  ) as HTMLButtonElement;
+  const actionBar = document.getElementById("action-bar");
+  const qualityOptions = document.querySelectorAll(".quality-option");
+  const grayscaleToggle = document.getElementById(
+    "grayscale-toggle",
+  ) as HTMLInputElement;
+
+  // Settings
+  let currentSettings: PdfCompressionOptions = {
+    compressionLevel: "standard",
+    grayscale: false,
+  };
+
+  // --- Settings Logic ---
+  qualityOptions.forEach((opt) => {
+    opt.addEventListener("click", () => {
+      // Visual Update
+      qualityOptions.forEach((o) => {
+        o.classList.remove(
+          "active",
+          "ring-2",
+          "ring-amber-500",
+          "border-amber-500",
+          "bg-slate-50",
+          "dark:bg-slate-800",
+        );
+        o.classList.add("border-slate-200", "dark:border-slate-800");
+        if (o === opt) {
+          o.classList.add(
+            "active",
+            "ring-2",
+            "ring-amber-500",
+            "border-amber-500",
+            "bg-slate-50",
+            "dark:bg-slate-800",
+          );
+          o.classList.remove("border-slate-200", "dark:border-slate-800");
+        }
+      });
+
+      const input = opt.querySelector("input");
+      if (input) {
+        input.checked = true;
+        currentSettings.compressionLevel = input.value as any;
+      }
+    });
+  });
+
+  grayscaleToggle?.addEventListener("change", (e) => {
+    currentSettings.grayscale = (e.target as HTMLInputElement).checked;
+  });
+
+  // --- Upload Logic ---
+  dropZone?.addEventListener("click", () => fileInput.click());
+  fileInput.addEventListener("change", (e) =>
+    handleFiles((e.target as HTMLInputElement).files),
+  );
+
+  dropZone?.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    dropZone.classList.add("border-amber-500", "bg-amber-50/50");
+  });
+
+  dropZone?.addEventListener("dragleave", () => {
+    dropZone.classList.remove("border-amber-500", "bg-amber-50/50");
+  });
+
+  dropZone?.addEventListener("drop", (e) => {
+    e.preventDefault();
+    dropZone.classList.remove("border-amber-500", "bg-amber-50/50");
+    if (e.dataTransfer?.files) handleFiles(e.dataTransfer.files);
+  });
+
+  function handleFiles(files: FileList | null) {
+    if (!files) return;
+
+    emptyState?.classList.add("hidden");
+    actionBar?.classList.remove("hidden");
+
+    Array.from(files).forEach((file) => {
+      if (file.type !== "application/pdf") return;
+
+      const id = Math.random().toString(36).substr(2, 9);
+      const itemElement = createQueueElement(file, id);
+      fileList?.appendChild(itemElement);
+
+      const item: FileQueueItem = {
+        id,
+        file,
+        status: "pending",
+        originalSize: file.size,
+        element: itemElement,
+      };
+
+      queue.push(item);
+      processQueue();
+    });
+
+    // Reset input
+    fileInput.value = "";
+  }
+
+  function createQueueElement(file: File, id: string): HTMLElement {
+    const clone = template.content.cloneNode(true) as DocumentFragment;
+    const el = clone.querySelector(".file-item") as HTMLElement;
+    el.dataset.id = id;
+
+    // Set Info
+    el.querySelector(".filename")!.textContent = file.name;
+    el.querySelector(".original-size")!.textContent = formatBytes(file.size);
+
+    // Events
+    el.querySelector(".remove-btn")!.addEventListener("click", () =>
+      removeItem(id),
+    );
+
+    return el;
+  }
+
+  function formatBytes(bytes: number) {
+    if (bytes === 0) return "0 B";
+    const k = 1024;
+    const sizes = ["B", "KB", "MB", "GB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+  }
+
+  function removeItem(id: string) {
+    const idx = queue.findIndex((i) => i.id === id);
+    if (idx === -1) return;
+
+    queue[idx].element.remove();
+    queue.splice(idx, 1);
+
+    if (queue.length === 0) {
+      emptyState?.classList.remove("hidden");
+      actionBar?.classList.add("hidden");
+    }
+  }
+
+  async function processQueue() {
+    if (processingCount >= MAX_CONCURRENT) return;
+
+    const nextItem = queue.find((i) => i.status === "pending");
+    if (!nextItem) return;
+
+    processingCount++;
+    nextItem.status = "processing";
+    updateItemUI(nextItem);
+
+    try {
+      // Capture settings at start of processing for this file
+      const settings = { ...currentSettings };
+
+      const compressedBlob = await compressPDF(nextItem.file, {
+        ...settings,
+        onProgress: (page, total) => {
+          updateProgress(nextItem, page, total);
+        },
+      });
+
+      nextItem.blob = compressedBlob;
+      nextItem.compressedSize = compressedBlob.size;
+      nextItem.status = "done";
+    } catch (e) {
+      console.error(e);
+      nextItem.status = "error";
+    } finally {
+      processingCount--;
+      updateItemUI(nextItem);
+      processQueue(); // checking for next
+    }
+  }
+
+  function updateProgress(item: FileQueueItem, page: number, total: number) {
+    const percent = Math.round((page / total) * 100);
+    const progressBar = item.element.querySelector(
+      ".progress-bar",
+    ) as HTMLElement;
+    const statusText = item.element.querySelector(
+      ".status-text",
+    ) as HTMLElement;
+    const percentText = item.element.querySelector(
+      ".percentage",
+    ) as HTMLElement;
+
+    progressBar.style.width = `${percent}%`;
+    statusText.textContent = `Processing Page ${page} of ${total}...`;
+    percentText.textContent = `${percent}%`;
+  }
+
+  function updateItemUI(item: FileQueueItem) {
+    const el = item.element;
+    const progressSection = el.querySelector(
+      ".progress-section",
+    ) as HTMLElement;
+    const successActions = el.querySelector(".success-actions") as HTMLElement;
+    const arrow = el.querySelector(".arrow") as HTMLElement;
+    const newSize = el.querySelector(".new-size") as HTMLElement;
+
+    if (item.status === "done" && item.blob) {
+      progressSection.classList.add("hidden");
+      successActions.classList.remove("hidden");
+      successActions.classList.add("flex");
+
+      // Update Sizes
+      arrow.classList.remove("hidden");
+      newSize.classList.remove("hidden");
+      newSize.textContent = formatBytes(item.compressedSize!);
+
+      // Savings Badge
+      const savedBytes = item.originalSize - item.compressedSize!;
+      const savedPercent = Math.round((savedBytes / item.originalSize) * 100);
+      const savingsBadge = el.querySelector(".savings-badge") as HTMLElement;
+
+      if (savedBytes > 0) {
+        savingsBadge.textContent = `-${savedPercent}%`;
+        savingsBadge.classList.add(
+          "bg-green-50",
+          "text-green-600",
+          "dark:bg-green-900/20",
+          "dark:text-green-400",
+        );
+      } else {
+        savingsBadge.textContent = `+${Math.abs(savedPercent)}%`;
+        savingsBadge.classList.add(
+          "bg-red-50",
+          "text-red-600",
+          "dark:bg-red-900/20",
+          "dark:text-red-400",
+        );
+      }
+
+      // Setup Download
+      const downloadBtn = el.querySelector(
+        ".download-btn",
+      ) as HTMLButtonElement;
+      downloadBtn.onclick = () => {
+        const url = URL.createObjectURL(item.blob!);
+        const a = document.createElement("a");
+        const nameParts = item.file.name.split(".");
+        nameParts.pop(); // remove extension
+        a.href = url;
+        a.download = `${nameParts.join(".")}-compressed.pdf`;
+        a.click();
+      };
+    } else if (item.status === "error") {
+      progressSection.querySelector(".status-text")!.textContent =
+        "Error processing file.";
+      (
+        progressSection.querySelector(".progress-bar") as HTMLElement
+      ).classList.add("bg-red-500");
+    }
+  }
+
+  // --- Download All ---
+  downloadAllBtn.addEventListener("click", async () => {
+    const doneItems = queue.filter((i) => i.status === "done" && i.blob);
+    if (doneItems.length === 0) return;
+
+    downloadAllBtn.disabled = true;
+    downloadAllBtn.textContent = "Zipping...";
+
+    const zip = new JSZip();
+    doneItems.forEach((item) => {
+      const nameParts = item.file.name.split(".");
+      nameParts.pop();
+      zip.file(`${nameParts.join(".")}-compressed.pdf`, item.blob!);
+    });
+
+    const content = await zip.generateAsync({ type: "blob" });
+    const url = URL.createObjectURL(content);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "compressed-pdfs.zip";
+    a.click();
+
+    downloadAllBtn.disabled = false;
+    downloadAllBtn.textContent = "Download All ZIP"; // Should use label but hardcoded for now in script
+  });
+</script>

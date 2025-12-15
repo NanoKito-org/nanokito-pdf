@@ -148,6 +148,18 @@ export const tools: Tool[] = [
     //     category: 'pdf',
     //     isNew: true
     // }
+    {
+        id: 'pdf-compressor',
+        slug: 'pdf-compressor',
+        title: { en: 'PDF Compressor', fr: 'Compresseur PDF' },
+        description: { 
+            en: 'Compress PDF files locally by rasterizing pages.', 
+            fr: 'Compressez vos fichiers PDF localement en rastérisant les pages.' 
+        },
+        icon: 'File', 
+        category: 'pdf',
+        isNew: true
+    },
 ];
 
 export const categoryLabels: Record<ToolCategory, Record<string, string>> = {

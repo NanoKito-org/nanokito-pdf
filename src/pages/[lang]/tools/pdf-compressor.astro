@@ -1,0 +1,87 @@
+---
+import ToolLayout from "../../../layouts/ToolLayout.astro";
+import PdfCompressor from "../../../components/tools/PdfCompressor.astro";
+
+export function getStaticPaths() {
+  return [{ params: { lang: "en" } }, { params: { lang: "fr" } }];
+}
+
+const { lang } = Astro.params;
+
+const content = {
+  en: {
+    title: "PDF Compressor",
+    description:
+      "Compress PDF files locally by rasterizing pages. No server uploads.",
+    category: "PDF",
+    toolSubtitle: "Visual Compression Mode",
+    labels: {
+      uploadTitle: "Compress PDF Files",
+      uploadDesc: "Drag & drop PDF files here, or click to select",
+      dropTitle: "Drop to Add",
+      processing: "Processing...",
+      download: "Download",
+      downloadAll: "Download All ZIP",
+      settings: "Compression Settings",
+      quality: "Compression Level",
+      grayscale: "Grayscale (B&W)",
+      grayscaleDesc: "Converts to black & white for maximum reduction",
+      warningTitle: "Visual Compression Mode",
+      warningDesc:
+        "This tool optimizes PDFs by converting pages to compressed images. Text will no longer be selectable/searchable.",
+    },
+    seo: {
+      h2: "Private & Secure PDF Compression",
+      p1: "Unlike other tools that upload your sensitive documents to a cloud server, <strong>NanoKito PDF Compressor</strong> works 100% in your browser. Your files never leave your device.",
+      p2: "We use a 'Visual Compression' technique (Rasterization) which converts document pages into highly optimized images. This is perfect for scanning archives, reducing file size for email, or sharing drafts where editable text is not required.",
+    },
+  },
+  fr: {
+    title: "Compresseur PDF",
+    description:
+      "Compressez vos fichiers PDF localement en rastérisant les pages. Sans envoi au serveur.",
+    category: "PDF",
+    toolSubtitle: "Mode de Compression Visuelle",
+    labels: {
+      uploadTitle: "Compresser des fichiers PDF",
+      uploadDesc:
+        "Glissez-déposez vos fichiers PDF ici, ou cliquez pour sélectionner",
+      dropTitle: "Déposer pour ajouter",
+      processing: "Traitement...",
+      download: "Télécharger",
+      downloadAll: "Tout télécharger (ZIP)",
+      settings: "Paramètres de compression",
+      quality: "Niveau de compression",
+      grayscale: "Niveaux de gris (N&B)",
+      grayscaleDesc: "Convertit en noir et blanc pour une réduction maximale",
+      warningTitle: "Mode de Compression Visuelle",
+      warningDesc:
+        "Cet outil optimise les PDF en convertissant les pages en images compressées. Le texte ne sera plus sélectionnable/recherchable.",
+    },
+    seo: {
+      h2: "Compression PDF Privée et Sécurisée",
+      p1: "Contrairement aux autres outils qui envoient vos documents sensibles sur un serveur cloud, <strong>le Compresseur PDF NanoKito</strong> fonctionne à 100% dans votre navigateur. Vos fichiers ne quittent jamais votre appareil.",
+      p2: "Nous utilisons une technique de 'Compression Visuelle' (Rastérisation) qui convertit les pages du document en images hautement optimisées. C'est parfait pour scanner des archives, réduire la taille des fichiers pour l'email, ou partager des brouillons où le texte éditable n'est pas requis.",
+    },
+  },
+};
+
+const t = content[lang as "en" | "fr"];
+---
+
+<ToolLayout
+  title={`${t.title} | NanoKito`}
+  description={t.description}
+  toolName={t.title}
+  category={t.category}
+  categorySlug="pdf"
+  lang={lang as "en" | "fr"}
+>
+  <PdfCompressor labels={t.labels} />
+
+  <div slot="content">
+    <h2>{t.seo.h2}</h2>
+    <p set:html={t.seo.p1} />
+    <p set:html={t.seo.p2} />
+  </div>
+</ToolLayout>
