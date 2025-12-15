@@ -1,10 +1,9 @@
 import * as pdfjsLib from 'pdfjs-dist';
 import { jsPDF } from 'jspdf';
 
-// Configure worker - using the specific version requested or a compatible one.
-// We'll use a specific version to match the types usually installed or just the one requested.
-// Ideally this should match the installed version package.json, but for CDN usage we stick to a recent stable one.
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+// Configure worker - using the local version to ensure compatibility
+import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
+pdfjsLib.GlobalWorkerOptions.workerSrc = workerUrl;
 
 export interface PdfCompressionOptions {
   compressionLevel: 'extreme' | 'standard' | 'high'; // affects JPEG quality
@@ -13,15 +12,15 @@ export interface PdfCompressionOptions {
 }
 
 const QUALITY_MAP = {
-  extreme: 0.4,
-  standard: 0.6,
-  high: 0.8
+  extreme: 0.5,
+  standard: 0.75,
+  high: 0.9
 };
 
 const SCALE_MAP = {
   extreme: 1.0,  // Lower resolution for extreme compression
-  standard: 1.5, // Decent readability
-  high: 2.0      // Better readability
+  standard: 2.0, // Decent readability
+  high: 3.0      // Better readability
 };
 
 export async function compressPDF(
@@ -72,7 +71,7 @@ export async function compressPDF(
       canvasContext: context,
       viewport: viewport,
       transform: options.grayscale ? undefined : undefined // filter is applied to context
-    }).promise;
+    } as any).promise;
 
     // 4. Compress (to JPEG)
     const imgData = canvas.toDataURL('image/jpeg', quality);

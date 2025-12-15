@@ -70,152 +70,12 @@ const {
   <div
     class="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade-up [animation-delay:100ms]"
   >
-    <!-- Left Column: Settings & Upload -->
+    <!-- Left Column: Upload -->
     <div class="lg:col-span-1 space-y-6">
-      <!-- Settings Panel -->
-      <div
-        class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm"
-      >
-        <div
-          class="flex items-center gap-2 mb-4 pb-3 border-b border-slate-100 dark:border-slate-800"
-        >
-          <Settings className="w-4 h-4 text-slate-500" />
-          <h2 class="font-bold text-slate-700 dark:text-slate-200">
-            {labels.settings}
-          </h2>
-        </div>
-
-        <div class="space-y-5">
-          <!-- Quality Selector -->
-          <div class="space-y-3">
-            <label
-              class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"
-            >
-              {labels.quality}
-            </label>
-            <div class="grid grid-cols-1 gap-2">
-              <label
-                class="relative flex items-center p-3 rounded-xl border cursor-pointer transition-all hover:bg-slate-50 dark:hover:bg-slate-800/50 group quality-option active ring-2 ring-amber-500 border-amber-500 bg-slate-50 dark:bg-slate-800"
-              >
-                <input
-                  type="radio"
-                  name="compression"
-                  value="standard"
-                  class="hidden"
-                  checked
-                />
-                <div class="flex-1">
-                  <div
-                    class="font-bold text-slate-700 dark:text-slate-200 text-sm"
-                  >
-                    Standard
-                  </div>
-                  <div class="text-xs text-slate-500 dark:text-slate-400">
-                    Recommended balance
-                  </div>
-                </div>
-                <div
-                  class="w-4 h-4 rounded-full border-2 border-slate-300 dark:border-slate-600 group-[.active]:border-amber-500 group-[.active]:bg-amber-500 flex items-center justify-center"
-                >
-                  <div
-                    class="w-1.5 h-1.5 rounded-full bg-white opacity-0 group-[.active]:opacity-100"
-                  >
-                  </div>
-                </div>
-              </label>
-
-              <label
-                class="relative flex items-center p-3 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer transition-all hover:bg-slate-50 dark:hover:bg-slate-800/50 group quality-option"
-              >
-                <input
-                  type="radio"
-                  name="compression"
-                  value="extreme"
-                  class="hidden"
-                />
-                <div class="flex-1">
-                  <div
-                    class="font-bold text-slate-700 dark:text-slate-200 text-sm"
-                  >
-                    Extreme
-                  </div>
-                  <div class="text-xs text-slate-500 dark:text-slate-400">
-                    Min Size (Low Quality)
-                  </div>
-                </div>
-                <div
-                  class="w-4 h-4 rounded-full border-2 border-slate-300 dark:border-slate-600 group-[.active]:border-amber-500 group-[.active]:bg-amber-500 flex items-center justify-center"
-                >
-                  <div
-                    class="w-1.5 h-1.5 rounded-full bg-white opacity-0 group-[.active]:opacity-100"
-                  >
-                  </div>
-                </div>
-              </label>
-
-              <label
-                class="relative flex items-center p-3 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer transition-all hover:bg-slate-50 dark:hover:bg-slate-800/50 group quality-option"
-              >
-                <input
-                  type="radio"
-                  name="compression"
-                  value="high"
-                  class="hidden"
-                />
-                <div class="flex-1">
-                  <div
-                    class="font-bold text-slate-700 dark:text-slate-200 text-sm"
-                  >
-                    High Quality
-                  </div>
-                  <div class="text-xs text-slate-500 dark:text-slate-400">
-                    Better readability
-                  </div>
-                </div>
-                <div
-                  class="w-4 h-4 rounded-full border-2 border-slate-300 dark:border-slate-600 group-[.active]:border-amber-500 group-[.active]:bg-amber-500 flex items-center justify-center"
-                >
-                  <div
-                    class="w-1.5 h-1.5 rounded-full bg-white opacity-0 group-[.active]:opacity-100"
-                  >
-                  </div>
-                </div>
-              </label>
-            </div>
-          </div>
-
-          <!-- Grayscale Toggle -->
-          <div
-            class="flex items-center justify-between py-2 border-t border-slate-100 dark:border-slate-800 pt-4"
-          >
-            <div class="flex flex-col">
-              <span class="font-bold text-slate-700 dark:text-slate-200 text-sm"
-                >{labels.grayscale}</span
-              >
-              <span
-                class="text-[10px] text-slate-500 dark:text-slate-400 max-w-[150px] leading-tight mt-1"
-                >{labels.grayscaleDesc}</span
-              >
-            </div>
-            <label class="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                id="grayscale-toggle"
-                class="sr-only peer"
-              />
-              <div
-                class="w-11 h-6 bg-slate-200 peer-focus:outline-none dark:bg-slate-700 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-amber-500"
-              >
-              </div>
-            </label>
-          </div>
-        </div>
-      </div>
-
       <!-- Upload Zone -->
       <div
         id="pdf-drop-zone"
-        class="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl bg-slate-50/50 dark:bg-slate-900/50 p-8 flex flex-col items-center justify-center text-center cursor-pointer hover:border-amber-400 dark:hover:border-amber-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-300 group"
+        class="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl bg-slate-50/50 dark:bg-slate-900/50 p-8 flex flex-col items-center justify-center text-center cursor-pointer hover:border-amber-400 dark:hover:border-amber-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-300 group sticky top-6"
       >
         <div
           class="p-4 rounded-full bg-white dark:bg-slate-800 group-hover:bg-amber-50 dark:group-hover:bg-amber-900/20 group-hover:scale-110 transition-all duration-300 shadow-sm mb-3"
@@ -276,9 +136,9 @@ const {
 
 <template id="file-item-template">
   <div
-    class="file-item relative bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 shadow-sm hover:shadow-md transition-all"
+    class="file-item relative bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 shadow-sm hover:shadow-md transition-all cursor-pointer group/card"
   >
-    <div class="flex items-start gap-4">
+    <div class="flex items-start gap-4 pointer-events-none">
       <!-- Icon -->
       <div
         class="p-3 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400"
@@ -287,7 +147,7 @@ const {
       </div>
 
       <!-- Content -->
-      <div class="flex-1 min-w-0">
+      <div class="flex-1 min-w-0 pointer-events-auto">
         <div class="flex items-start justify-between mb-2">
           <div>
             <h4
@@ -306,11 +166,44 @@ const {
               >
             </div>
           </div>
-          <button
-            class="text-slate-400 hover:text-red-500 transition-colors remove-btn p-1"
-          >
-            <Trash2 className="w-4 h-4" />
-          </button>
+          <div class="flex items-center gap-1">
+             <button
+              class="text-slate-400 hover:text-amber-500 transition-colors settings-btn p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
+              title="Compression Settings"
+            >
+              <Settings className="w-4 h-4" />
+            </button>
+            <button
+              class="text-slate-400 hover:text-red-500 transition-colors remove-btn p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
+              title="Remove File"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+
+        <!-- Settings Panel (Visible by default) -->
+        <div class="settings-panel mb-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-800" onclick="event.stopPropagation()">
+             <div class="flex flex-col gap-3">
+                <div class="space-y-2">
+                    <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Quality Profile</label>
+                    <div class="flex gap-2">
+                        <label class="flex-1 cursor-pointer">
+                            <input type="radio" name="quality" value="screen" class="peer sr-only">
+                            <div class="text-center py-1.5 px-2 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-600 dark:text-slate-300 peer-checked:bg-amber-500 peer-checked:text-white peer-checked:border-amber-500 transition-all">Screen</div>
+                        </label>
+                        <label class="flex-1 cursor-pointer">
+                            <input type="radio" name="quality" value="ebook" class="peer sr-only" checked>
+                            <div class="text-center py-1.5 px-2 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-600 dark:text-slate-300 peer-checked:bg-amber-500 peer-checked:text-white peer-checked:border-amber-500 transition-all">eBook</div>
+                        </label>
+                         <label class="flex-1 cursor-pointer">
+                            <input type="radio" name="quality" value="printer" class="peer sr-only">
+                            <div class="text-center py-1.5 px-2 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-600 dark:text-slate-300 peer-checked:bg-amber-500 peer-checked:text-white peer-checked:border-amber-500 transition-all">Printer</div>
+                        </label>
+                    </div>
+                    <p class="text-[10px] text-slate-400 text-center quality-desc">Best balance of size & quality (150 dpi)</p>
+                </div>
+             </div>
         </div>
 
         <!-- Progress Bar -->
@@ -320,7 +213,7 @@ const {
               class="status-text font-medium text-amber-600 dark:text-amber-400"
               >Waiting...</span
             >
-            <span class="percentage text-slate-500">0%</span>
+            <span class="percentage text-slate-500"></span>
           </div>
           <div
             class="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden"
@@ -333,7 +226,7 @@ const {
         </div>
 
         <!-- Success Actions -->
-        <div class="success-actions hidden mt-3 flex items-center gap-3">
+        <div class="success-actions hidden mt-3 flex items-center gap-3" onclick="event.stopPropagation()">
           <button
             class="download-btn flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 rounded-lg text-xs font-bold hover:bg-amber-200 dark:hover:bg-amber-900/50 transition-colors"
           >
@@ -351,12 +244,17 @@ const {
   </div>
 </template>
 
+<div class="text-center mt-8 text-[10px] text-slate-400">
+  Powered by Ghostscript. This tool is for educational/personal use (AGPL License).
+</div>
+
 <script>
-  import {
-    compressPDF,
-    type PdfCompressionOptions,
-  } from "../../utils/pdfCompression";
   import JSZip from "jszip";
+  import * as pdfjsLib from "pdfjs-dist";
+
+  // Set worker source for pdf.js (needed for getDocument)
+  // Set worker source for pdf.js (needed for getDocument)
+  pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdfjs/pdf.worker.min.mjs';
 
   // State
   interface FileQueueItem {
@@ -367,10 +265,14 @@ const {
     compressedSize?: number;
     blob?: Blob;
     element: HTMLElement;
+    quality: 'screen' | 'ebook' | 'printer';
+    totalPages?: number;
+    currentProgress: number;
+    progressInterval?: number;
   }
 
   const queue: FileQueueItem[] = [];
-  const MAX_CONCURRENT = 1; // Process one at a time to prevent UI freezing
+  const MAX_CONCURRENT = 1;
   let processingCount = 0;
 
   // DOM
@@ -385,55 +287,6 @@ const {
     "download-all-btn",
   ) as HTMLButtonElement;
   const actionBar = document.getElementById("action-bar");
-  const qualityOptions = document.querySelectorAll(".quality-option");
-  const grayscaleToggle = document.getElementById(
-    "grayscale-toggle",
-  ) as HTMLInputElement;
-
-  // Settings
-  let currentSettings: PdfCompressionOptions = {
-    compressionLevel: "standard",
-    grayscale: false,
-  };
-
-  // --- Settings Logic ---
-  qualityOptions.forEach((opt) => {
-    opt.addEventListener("click", () => {
-      // Visual Update
-      qualityOptions.forEach((o) => {
-        o.classList.remove(
-          "active",
-          "ring-2",
-          "ring-amber-500",
-          "border-amber-500",
-          "bg-slate-50",
-          "dark:bg-slate-800",
-        );
-        o.classList.add("border-slate-200", "dark:border-slate-800");
-        if (o === opt) {
-          o.classList.add(
-            "active",
-            "ring-2",
-            "ring-amber-500",
-            "border-amber-500",
-            "bg-slate-50",
-            "dark:bg-slate-800",
-          );
-          o.classList.remove("border-slate-200", "dark:border-slate-800");
-        }
-      });
-
-      const input = opt.querySelector("input");
-      if (input) {
-        input.checked = true;
-        currentSettings.compressionLevel = input.value as any;
-      }
-    });
-  });
-
-  grayscaleToggle?.addEventListener("change", (e) => {
-    currentSettings.grayscale = (e.target as HTMLInputElement).checked;
-  });
 
   // --- Upload Logic ---
   dropZone?.addEventListener("click", () => fileInput.click());
@@ -466,7 +319,7 @@ const {
       if (file.type !== "application/pdf") return;
 
       const id = Math.random().toString(36).substr(2, 9);
-      const itemElement = createQueueElement(file, id);
+      const itemElement = createQueueElement(file, id, 'ebook'); // Default to ebook
       fileList?.appendChild(itemElement);
 
       const item: FileQueueItem = {
@@ -475,6 +328,9 @@ const {
         status: "pending",
         originalSize: file.size,
         element: itemElement,
+        element: itemElement,
+        quality: 'ebook',
+        currentProgress: 0
       };
 
       queue.push(item);
@@ -485,7 +341,7 @@ const {
     fileInput.value = "";
   }
 
-  function createQueueElement(file: File, id: string): HTMLElement {
+  function createQueueElement(file: File, id: string, quality: string): HTMLElement {
     const clone = template.content.cloneNode(true) as DocumentFragment;
     const el = clone.querySelector(".file-item") as HTMLElement;
     el.dataset.id = id;
@@ -494,12 +350,291 @@ const {
     el.querySelector(".filename")!.textContent = file.name;
     el.querySelector(".original-size")!.textContent = formatBytes(file.size);
 
+    // Settings UI Logic
+    const settingsBtn = el.querySelector('.settings-btn') as HTMLButtonElement;
+    const settingsPanel = el.querySelector('.settings-panel') as HTMLElement;
+    const qualityInputs = el.querySelectorAll('input[name="quality"]');
+    const qualityDesc = el.querySelector('.quality-desc') as HTMLElement;
+
+    // Toggle Panel Function
+    const togglePanel = () => {
+        settingsPanel.classList.toggle('hidden');
+        settingsBtn.classList.toggle('text-amber-500');
+    };
+
+    // Card Click
+    el.addEventListener('click', (e) => {
+        const target = e.target as HTMLElement;
+        if (target.closest('button') || target.closest('input') || target.closest('label')) return;
+        togglePanel();
+    });
+
+    // Button Click
+    settingsBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        togglePanel();
+    });
+
+    // Update Settings State & Re-compress
+    const updateAndRecompress = () => {
+        const item = queue.find(i => i.id === id);
+        if (!item) return;
+
+        if (item.status === 'done' || item.status === 'error') {
+            item.status = 'pending';
+            const progressSection = el.querySelector(".progress-section") as HTMLElement;
+            const successActions = el.querySelector(".success-actions") as HTMLElement;
+            
+            progressSection.classList.remove("hidden");
+            successActions.classList.add("hidden");
+            successActions.classList.remove("flex");
+            
+            processQueue();
+        }
+    };
+
+    qualityInputs.forEach(input => {
+        input.addEventListener('change', (e) => {
+            const target = e.target as HTMLInputElement;
+            if (target.checked) {
+                const val = target.value;
+                const item = queue.find(i => i.id === id);
+                if (item) {
+                    item.quality = val as any;
+                    
+                    // Update description
+                    if (val === 'screen') qualityDesc.textContent = "Smallest size, low res (72 dpi)";
+                    if (val === 'ebook') qualityDesc.textContent = "Best balance of size & quality (150 dpi)";
+                    if (val === 'printer') qualityDesc.textContent = "High quality for printing (300 dpi)";
+
+                    updateAndRecompress();
+                }
+            }
+        });
+        (input as HTMLInputElement).name = `quality-${id}`;
+    });
+
     // Events
-    el.querySelector(".remove-btn")!.addEventListener("click", () =>
-      removeItem(id),
-    );
+    el.querySelector(".remove-btn")!.addEventListener("click", (e) => {
+        e.stopPropagation();
+        removeItem(id);
+    });
 
     return el;
+  }
+
+  async function processQueue() {
+    if (processingCount >= MAX_CONCURRENT) return;
+
+    const nextItem = queue.find((i) => i.status === "pending");
+    if (!nextItem) return;
+
+    processingCount++;
+    nextItem.status = "processing";
+    updateItemUI(nextItem);
+
+    // Disable settings
+    const settingsPanel = nextItem.element.querySelector('.settings-panel');
+    if (settingsPanel) {
+        const inputs = settingsPanel.querySelectorAll('input');
+        inputs.forEach(i => i.disabled = true);
+        settingsPanel.classList.add('opacity-50', 'pointer-events-none');
+    }
+
+    try {
+        const arrayBuffer = await nextItem.file.arrayBuffer();
+        
+        // Get Page Count using pdf.js
+        try {
+            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer.slice(0) }).promise;
+            nextItem.totalPages = pdf.numPages;
+        } catch (err) {
+            console.warn("Could not get page count:", err);
+            nextItem.totalPages = 0;
+        }
+
+        // Start Fake Progress
+        nextItem.currentProgress = 0;
+        nextItem.progressInterval = window.setInterval(() => {
+            if (nextItem.currentProgress < 99) {
+                // Faster initial progress
+                let increment = 1;
+                if (nextItem.currentProgress < 70) {
+                    increment = 2; // Very fast start
+                } else if (nextItem.currentProgress < 90) {
+                    increment = 0.5; // Slow down a bit
+                } else {
+                    increment = 0.1; // Crawl at the end
+                }
+                
+                nextItem.currentProgress = Math.min(99, nextItem.currentProgress + increment);
+                
+                const progressBar = nextItem.element.querySelector(".progress-bar") as HTMLElement;
+                const percentage = nextItem.element.querySelector(".percentage") as HTMLElement;
+                
+                progressBar.style.width = `${nextItem.currentProgress}%`;
+                percentage.textContent = `${Math.round(nextItem.currentProgress)}%`;
+            }
+        }, 100); // Update every 100ms (faster updates)
+
+        // Spawn One-Shot Worker
+        const worker = new Worker('/workers/ghostscriptWorker.js');
+        
+        worker.onmessage = (e) => {
+            const { id, type, success, blob, error, current } = e.data;
+            if (id !== nextItem.id) return;
+
+            if (type === 'progress') {
+                const total = nextItem.totalPages || 0;
+                if (total > 0) {
+                    const realPercent = Math.round((current / total) * 100);
+                    // Always take the higher value (fake vs real)
+                    nextItem.currentProgress = Math.max(nextItem.currentProgress, realPercent);
+                    
+                    const progressBar = nextItem.element.querySelector(".progress-bar") as HTMLElement;
+                    const percentage = nextItem.element.querySelector(".percentage") as HTMLElement;
+                    const statusText = nextItem.element.querySelector(".status-text") as HTMLElement;
+                    
+                    progressBar.classList.remove("animate-pulse");
+                    progressBar.style.width = `${nextItem.currentProgress}%`;
+                    percentage.textContent = `${Math.round(nextItem.currentProgress)}%`;
+                    statusText.textContent = `Processing page ${current} of ${total}...`;
+                } else {
+                    // Fallback if we failed to get page count
+                    const statusText = nextItem.element.querySelector(".status-text") as HTMLElement;
+                    statusText.textContent = `Processing page ${current}...`;
+                }
+                return;
+            }
+
+            // Clear interval
+            if (nextItem.progressInterval) clearInterval(nextItem.progressInterval);
+
+            if (success && blob) {
+                nextItem.blob = blob;
+                nextItem.compressedSize = blob.size;
+                nextItem.status = "done";
+            } else {
+                console.error('Compression failed:', error);
+                nextItem.status = "error";
+            }
+            
+            worker.terminate(); // Cleanup
+            processingCount--;
+            updateItemUI(nextItem);
+            processQueue();
+        };
+
+        worker.onerror = (err) => {
+            console.error('Worker error:', err);
+            if (nextItem.progressInterval) clearInterval(nextItem.progressInterval);
+            nextItem.status = "error";
+            worker.terminate();
+            processingCount--;
+            updateItemUI(nextItem);
+            processQueue();
+        };
+
+        // Send to worker
+        worker.postMessage({
+            id: nextItem.id,
+            fileArrayBuffer: arrayBuffer,
+            quality: nextItem.quality
+        }, [arrayBuffer]);
+
+    } catch (e) {
+      console.error(e);
+      if (nextItem.progressInterval) clearInterval(nextItem.progressInterval);
+      nextItem.status = "error";
+      processingCount--;
+      updateItemUI(nextItem);
+      processQueue();
+    }
+  }
+
+  function updateItemUI(item: FileQueueItem) {
+    const el = item.element;
+    const progressSection = el.querySelector(
+      ".progress-section",
+    ) as HTMLElement;
+    const successActions = el.querySelector(".success-actions") as HTMLElement;
+    const arrow = el.querySelector(".arrow") as HTMLElement;
+    const newSize = el.querySelector(".new-size") as HTMLElement;
+    const settingsPanel = el.querySelector('.settings-panel') as HTMLElement;
+    const statusText = el.querySelector(".status-text") as HTMLElement;
+    const progressBar = el.querySelector(".progress-bar") as HTMLElement;
+
+    if (item.status === "processing") {
+        statusText.textContent = "Optimizing PDF structure... This may take a moment.";
+        progressBar.classList.add("animate-pulse");
+        progressBar.style.width = "0%"; // Start at 0
+    } else if (item.status === "done" && item.blob) {
+      progressSection.classList.add("hidden");
+      successActions.classList.remove("hidden");
+      successActions.classList.add("flex");
+      
+      // Re-enable settings
+      if (settingsPanel) {
+        const inputs = settingsPanel.querySelectorAll('input');
+        inputs.forEach(i => i.disabled = false);
+        settingsPanel.classList.remove('opacity-50', 'pointer-events-none');
+      }
+
+      // Update Sizes
+      arrow.classList.remove("hidden");
+      newSize.classList.remove("hidden");
+      newSize.textContent = formatBytes(item.compressedSize!);
+
+      // Savings Badge
+      const savedBytes = item.originalSize - item.compressedSize!;
+      const savedPercent = Math.round((savedBytes / item.originalSize) * 100);
+      const savingsBadge = el.querySelector(".savings-badge") as HTMLElement;
+
+      if (savedBytes > 0) {
+        savingsBadge.textContent = `-${savedPercent}%`;
+        savingsBadge.classList.add(
+          "bg-green-50",
+          "text-green-600",
+          "dark:bg-green-900/20",
+          "dark:text-green-400",
+        );
+        savingsBadge.classList.remove("bg-red-50", "text-red-600", "dark:bg-red-900/20", "dark:text-red-400");
+      } else {
+        savingsBadge.textContent = `+${Math.abs(savedPercent)}%`;
+        savingsBadge.classList.add(
+          "bg-red-50",
+          "text-red-600",
+          "dark:bg-red-900/20",
+          "dark:text-red-400",
+        );
+        savingsBadge.classList.remove("bg-green-50", "text-green-600", "dark:bg-green-900/20", "dark:text-green-400");
+      }
+
+      // Setup Download
+      const downloadBtn = el.querySelector(
+        ".download-btn",
+      ) as HTMLButtonElement;
+      downloadBtn.onclick = (e) => {
+        e.stopPropagation();
+        const url = URL.createObjectURL(item.blob!);
+        const a = document.createElement("a");
+        const nameParts = item.file.name.split(".");
+        nameParts.pop(); // remove extension
+        a.href = url;
+        a.download = `${nameParts.join(".")}-compressed.pdf`;
+        a.click();
+      };
+    } else if (item.status === "error") {
+      statusText.textContent = "Error processing file. Engine may not be loaded.";
+      progressBar.classList.remove("animate-pulse");
+      progressBar.classList.add("bg-red-500");
+       // Re-enable settings even on error to allow retry
+      if (settingsPanel) {
+        const inputs = settingsPanel.querySelectorAll('input');
+        inputs.forEach(i => i.disabled = false);
+        settingsPanel.classList.remove('opacity-50', 'pointer-events-none');
+      }
+    }
   }
 
   function formatBytes(bytes: number) {
@@ -523,120 +658,6 @@ const {
     }
   }
 
-  async function processQueue() {
-    if (processingCount >= MAX_CONCURRENT) return;
-
-    const nextItem = queue.find((i) => i.status === "pending");
-    if (!nextItem) return;
-
-    processingCount++;
-    nextItem.status = "processing";
-    updateItemUI(nextItem);
-
-    try {
-      // Capture settings at start of processing for this file
-      const settings = { ...currentSettings };
-
-      const compressedBlob = await compressPDF(nextItem.file, {
-        ...settings,
-        onProgress: (page, total) => {
-          updateProgress(nextItem, page, total);
-        },
-      });
-
-      nextItem.blob = compressedBlob;
-      nextItem.compressedSize = compressedBlob.size;
-      nextItem.status = "done";
-    } catch (e) {
-      console.error(e);
-      nextItem.status = "error";
-    } finally {
-      processingCount--;
-      updateItemUI(nextItem);
-      processQueue(); // checking for next
-    }
-  }
-
-  function updateProgress(item: FileQueueItem, page: number, total: number) {
-    const percent = Math.round((page / total) * 100);
-    const progressBar = item.element.querySelector(
-      ".progress-bar",
-    ) as HTMLElement;
-    const statusText = item.element.querySelector(
-      ".status-text",
-    ) as HTMLElement;
-    const percentText = item.element.querySelector(
-      ".percentage",
-    ) as HTMLElement;
-
-    progressBar.style.width = `${percent}%`;
-    statusText.textContent = `Processing Page ${page} of ${total}...`;
-    percentText.textContent = `${percent}%`;
-  }
-
-  function updateItemUI(item: FileQueueItem) {
-    const el = item.element;
-    const progressSection = el.querySelector(
-      ".progress-section",
-    ) as HTMLElement;
-    const successActions = el.querySelector(".success-actions") as HTMLElement;
-    const arrow = el.querySelector(".arrow") as HTMLElement;
-    const newSize = el.querySelector(".new-size") as HTMLElement;
-
-    if (item.status === "done" && item.blob) {
-      progressSection.classList.add("hidden");
-      successActions.classList.remove("hidden");
-      successActions.classList.add("flex");
-
-      // Update Sizes
-      arrow.classList.remove("hidden");
-      newSize.classList.remove("hidden");
-      newSize.textContent = formatBytes(item.compressedSize!);
-
-      // Savings Badge
-      const savedBytes = item.originalSize - item.compressedSize!;
-      const savedPercent = Math.round((savedBytes / item.originalSize) * 100);
-      const savingsBadge = el.querySelector(".savings-badge") as HTMLElement;
-
-      if (savedBytes > 0) {
-        savingsBadge.textContent = `-${savedPercent}%`;
-        savingsBadge.classList.add(
-          "bg-green-50",
-          "text-green-600",
-          "dark:bg-green-900/20",
-          "dark:text-green-400",
-        );
-      } else {
-        savingsBadge.textContent = `+${Math.abs(savedPercent)}%`;
-        savingsBadge.classList.add(
-          "bg-red-50",
-          "text-red-600",
-          "dark:bg-red-900/20",
-          "dark:text-red-400",
-        );
-      }
-
-      // Setup Download
-      const downloadBtn = el.querySelector(
-        ".download-btn",
-      ) as HTMLButtonElement;
-      downloadBtn.onclick = () => {
-        const url = URL.createObjectURL(item.blob!);
-        const a = document.createElement("a");
-        const nameParts = item.file.name.split(".");
-        nameParts.pop(); // remove extension
-        a.href = url;
-        a.download = `${nameParts.join(".")}-compressed.pdf`;
-        a.click();
-      };
-    } else if (item.status === "error") {
-      progressSection.querySelector(".status-text")!.textContent =
-        "Error processing file.";
-      (
-        progressSection.querySelector(".progress-bar") as HTMLElement
-      ).classList.add("bg-red-500");
-    }
-  }
 
   // --- Download All ---
   downloadAllBtn.addEventListener("click", async () => {
@@ -661,6 +682,6 @@ const {
     a.click();
 
     downloadAllBtn.disabled = false;
-    downloadAllBtn.textContent = "Download All ZIP"; // Should use label but hardcoded for now in script
+    downloadAllBtn.textContent = "Download All ZIP";
   });
 </script>
