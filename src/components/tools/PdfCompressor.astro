@@ -25,6 +25,14 @@ interface Props {
     grayscaleDesc?: string;
     warningTitle?: string;
     warningDesc?: string;
+    qualityScreen?: string;
+    qualityEbook?: string;
+    qualityPrinter?: string;
+    statusOptimizing?: string;
+    statusProcessingPage?: string;
+    statusError?: string;
+    zipping?: string;
+    footer?: string;
   };
 }
 
@@ -43,11 +51,23 @@ const {
     warningTitle: "Visual Compression Mode",
     warningDesc:
       "This tool optimizes PDFs by converting pages to compressed images. Text will no longer be selectable/searchable.",
+    qualityScreen: "Smallest size, low res (72 dpi)",
+    qualityEbook: "Best balance of size & quality (150 dpi)",
+    qualityPrinter: "High quality for printing (300 dpi)",
+    statusOptimizing: "Optimizing PDF structure... This may take a moment.",
+    statusProcessingPage: "Processing page {current} of {total}...",
+    statusError: "Error processing file. Engine may not be loaded.",
+    zipping: "Zipping...",
+    footer: "Powered by Ghostscript. This tool is for educational/personal use (AGPL License).",
   },
 } = Astro.props;
 ---
 
-<div class="w-full max-w-4xl mx-auto space-y-8">
+<div 
+  class="w-full max-w-4xl mx-auto space-y-8"
+  id="pdf-compressor-app"
+  data-labels={JSON.stringify(labels)}
+>
   <!-- Warning Banner -->
   <div
     class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50 rounded-xl p-4 flex gap-3 items-start animate-fade-up"
@@ -201,7 +221,7 @@ const {
                             <div class="text-center py-1.5 px-2 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-600 dark:text-slate-300 peer-checked:bg-amber-500 peer-checked:text-white peer-checked:border-amber-500 transition-all">Printer</div>
                         </label>
                     </div>
-                    <p class="text-[10px] text-slate-400 text-center quality-desc">Best balance of size & quality (150 dpi)</p>
+                    <p class="text-[10px] text-slate-400 text-center quality-desc">{labels.qualityEbook}</p>
                 </div>
              </div>
         </div>
@@ -231,7 +251,7 @@ const {
             class="download-btn flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 rounded-lg text-xs font-bold hover:bg-amber-200 dark:hover:bg-amber-900/50 transition-colors"
           >
             <Download className="w-3.5 h-3.5" />
-            Save PDF
+            {labels.download}
           </button>
           <div
             class="px-3 py-2 rounded-lg bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 text-xs font-bold savings-badge"
@@ -245,7 +265,7 @@ const {
 </template>
 
 <div class="text-center mt-8 text-[10px] text-slate-400">
-  Powered by Ghostscript. This tool is for educational/personal use (AGPL License).
+  {labels.footer}
 </div>
 
 <script>
@@ -287,6 +307,10 @@ const {
     "download-all-btn",
   ) as HTMLButtonElement;
   const actionBar = document.getElementById("action-bar");
+  
+  // Get Labels
+  const appContainer = document.getElementById('pdf-compressor-app');
+  const labels = JSON.parse(appContainer?.dataset.labels || '{}');
 
   // --- Upload Logic ---
   dropZone?.addEventListener("click", () => fileInput.click());
@@ -403,9 +427,9 @@ const {
                     item.quality = val as any;
                     
                     // Update description
-                    if (val === 'screen') qualityDesc.textContent = "Smallest size, low res (72 dpi)";
-                    if (val === 'ebook') qualityDesc.textContent = "Best balance of size & quality (150 dpi)";
-                    if (val === 'printer') qualityDesc.textContent = "High quality for printing (300 dpi)";
+                    if (val === 'screen') qualityDesc.textContent = labels.qualityScreen;
+                    if (val === 'ebook') qualityDesc.textContent = labels.qualityEbook;
+                    if (val === 'printer') qualityDesc.textContent = labels.qualityPrinter;
 
                     updateAndRecompress();
                 }
@@ -498,11 +522,15 @@ const {
                     progressBar.classList.remove("animate-pulse");
                     progressBar.style.width = `${nextItem.currentProgress}%`;
                     percentage.textContent = `${Math.round(nextItem.currentProgress)}%`;
-                    statusText.textContent = `Processing page ${current} of ${total}...`;
+                    statusText.textContent = labels.statusProcessingPage
+                        .replace('{current}', current.toString())
+                        .replace('{total}', total.toString());
                 } else {
                     // Fallback if we failed to get page count
                     const statusText = nextItem.element.querySelector(".status-text") as HTMLElement;
-                    statusText.textContent = `Processing page ${current}...`;
+                    statusText.textContent = labels.statusProcessingPage
+                        .replace('{current}', current.toString())
+                        .replace(' of {total}', '');
                 }
                 return;
             }
@@ -565,7 +593,7 @@ const {
     const progressBar = el.querySelector(".progress-bar") as HTMLElement;
 
     if (item.status === "processing") {
-        statusText.textContent = "Optimizing PDF structure... This may take a moment.";
+        statusText.textContent = labels.statusOptimizing;
         progressBar.classList.add("animate-pulse");
         progressBar.style.width = "0%"; // Start at 0
     } else if (item.status === "done" && item.blob) {
@@ -625,7 +653,7 @@ const {
         a.click();
       };
     } else if (item.status === "error") {
-      statusText.textContent = "Error processing file. Engine may not be loaded.";
+      statusText.textContent = labels.statusError;
       progressBar.classList.remove("animate-pulse");
       progressBar.classList.add("bg-red-500");
        // Re-enable settings even on error to allow retry
@@ -665,7 +693,7 @@ const {
     if (doneItems.length === 0) return;
 
     downloadAllBtn.disabled = true;
-    downloadAllBtn.textContent = "Zipping...";
+    downloadAllBtn.textContent = labels.zipping;
 
     const zip = new JSZip();
     doneItems.forEach((item) => {
@@ -682,6 +710,6 @@ const {
     a.click();
 
     downloadAllBtn.disabled = false;
-    downloadAllBtn.textContent = "Download All ZIP";
+    downloadAllBtn.textContent = labels.downloadAll;
   });
 </script>
