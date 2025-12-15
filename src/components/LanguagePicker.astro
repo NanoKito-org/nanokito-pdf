@@ -21,17 +21,21 @@ function getPathForLang(l: string) {
 }
 ---
 
-<div class="relative group z-50">
+<div class="relative z-50 language-picker">
     <button
+        id="lang-picker-btn"
         class="flex items-center gap-2 p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 transition-colors cursor-pointer"
         aria-label="Change Language"
+        aria-expanded="false"
+        aria-controls="lang-dropdown"
     >
         <Globe className="w-5 h-5" />
         <span class="uppercase font-medium text-sm">{lang}</span>
     </button>
 
     <div
-        class="absolute right-0 top-full mt-2 w-32 bg-white dark:bg-gray-900 rounded-lg shadow-xl border border-gray-200 dark:border-gray-800 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 trnasform origin-top-right"
+        id="lang-dropdown"
+        class="absolute right-0 top-full mt-2 w-32 bg-white dark:bg-gray-900 rounded-lg shadow-xl border border-gray-200 dark:border-gray-800 opacity-0 invisible transition-all duration-200 transform origin-top-right scale-95"
     >
         <ul class="py-1">
             {
@@ -49,3 +53,45 @@ function getPathForLang(l: string) {
         </ul>
     </div>
 </div>
+
+<script>
+    const btn = document.getElementById("lang-picker-btn");
+    const dropdown = document.getElementById("lang-dropdown");
+    const container = document.querySelector(".language-picker");
+
+    if (btn && dropdown && container) {
+        btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const isExpanded = btn.getAttribute("aria-expanded") === "true";
+            toggleDropdown(!isExpanded);
+        });
+
+        // Close when clicking outside
+        document.addEventListener("click", (e) => {
+            if (!container.contains(e.target as Node)) {
+                toggleDropdown(false);
+            }
+        });
+
+        // Close when pressing Escape
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") {
+                toggleDropdown(false);
+            }
+        });
+    }
+
+    function toggleDropdown(show: boolean) {
+        if (!btn || !dropdown) return;
+
+        btn.setAttribute("aria-expanded", String(show));
+
+        if (show) {
+            dropdown.classList.remove("opacity-0", "invisible", "scale-95");
+            dropdown.classList.add("opacity-100", "visible", "scale-100");
+        } else {
+            dropdown.classList.add("opacity-0", "invisible", "scale-95");
+            dropdown.classList.remove("opacity-100", "visible", "scale-100");
+        }
+    }
+</script>

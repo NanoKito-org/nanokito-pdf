@@ -7,7 +7,20 @@ interface Props {
     compressed: string;
     quality: string;
     download: string;
+    downloadAll: string;
     loading: string;
+    copy: string;
+    copied: string;
+    error: string;
+    outputFormat: string;
+    webpBadgeTitle: string;
+    webpBadgeDesc: string;
+    presets: {
+      high: string;
+      balanced: string;
+      max: string;
+    };
+    reset: string;
   };
 }
 
@@ -19,7 +32,21 @@ const {
     compressed: "Compressed Preview",
     quality: "Image Quality",
     download: "Download Compressed Image",
+    downloadAll: "Download All",
     loading: "Compressing...",
+    copy: "Copy",
+    copied: "Copied!",
+    error: "Error",
+    outputFormat: "Output Format",
+    webpBadgeTitle: "WebP Mode:",
+    webpBadgeDesc:
+      "Best for big files. Converts images to next-gen WebP format for maximum compression.",
+    presets: {
+      high: "High",
+      balanced: "Balanced",
+      max: "Max",
+    },
+    reset: "Reset",
   },
 } = Astro.props;
 ---
@@ -28,7 +55,7 @@ const {
   <!-- Upload Zone -->
   <div
     id="upload-zone"
-    class="w-full h-80 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl bg-slate-50 dark:bg-slate-900/50 flex flex-col items-center justify-center cursor-pointer hover:bg-yellow-400/10 dark:hover:bg-yellow-400/5 hover:border-yellow-400 dark:hover:border-yellow-400 transition-all duration-300 group"
+    class="w-full h-64 md:h-80 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl bg-slate-50 dark:bg-slate-900/50 flex flex-col items-center justify-center cursor-pointer hover:bg-yellow-400/10 dark:hover:bg-yellow-400/5 hover:border-yellow-400 dark:hover:border-yellow-400 transition-all duration-300 group p-4 md:p-6"
   >
     <div
       class="p-4 rounded-full bg-white dark:bg-slate-800 text-slate-400 group-hover:bg-yellow-400 group-hover:text-slate-900 transition-all duration-300 mb-4 ring-1 ring-slate-200 dark:ring-slate-700 group-hover:ring-yellow-500 scale-100 group-hover:scale-110 shadow-sm"
@@ -51,12 +78,12 @@ const {
       </svg>
     </div>
     <h3
-      class="text-xl font-bold text-slate-700 dark:text-slate-200 group-hover:text-amber-600 dark:group-hover:text-yellow-400 transition-colors"
+      class="text-xl font-bold text-slate-700 dark:text-slate-200 group-hover:text-amber-600 dark:group-hover:text-yellow-400 transition-colors text-center"
     >
       {labels.uploadTitle}
     </h3>
     <p
-      class="text-slate-500 dark:text-slate-500 mt-2 text-sm max-w-xs text-center"
+      class="text-slate-500 dark:text-slate-500 mt-2 text-sm max-w-xs text-center leading-relaxed"
     >
       {labels.uploadDesc}
     </p>
@@ -65,6 +92,7 @@ const {
       id="file-input"
       accept="image/png, image/jpeg, image/webp"
       class="hidden"
+      multiple
     />
   </div>
 
@@ -89,36 +117,45 @@ const {
   </div>
 
   <!-- Workspace (Hidden by default) -->
-  <!-- Workspace (Hidden by default) -->
   <div id="workspace" class="hidden flex-col gap-8 animate-fade-up">
+    <!-- Image Strip (Master View) -->
+    <div
+      id="image-strip"
+      class="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4 snap-x scrollbar-hide select-none"
+    >
+      <!-- Dynamic Thumbnails will be injected here -->
+    </div>
+
     <!-- Comparison Slider & Stats -->
     <div class="flex flex-col gap-4">
       <!-- Stats Header -->
-      <div class="flex items-center justify-between px-2">
+      <div class="flex flex-wrap items-center justify-between px-1 gap-y-2">
         <div class="flex flex-col">
           <span
-            class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
+            class="text-[10px] xs:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
             >{labels.original}</span
           >
           <span
             id="original-size"
-            class="font-mono text-slate-700 dark:text-slate-200">0.00 MB</span
+            class="font-mono text-sm xs:text-base text-slate-700 dark:text-slate-200"
+            >0.00 MB</span
           >
         </div>
         <div
           id="savings-badge"
-          class="hidden px-3 py-1 rounded-full bg-green-100 dark:bg-green-500/20 text-green-700 dark:text-green-400 text-sm font-bold"
+          class="hidden px-2 py-0.5 xs:px-3 xs:py-1 rounded-full bg-green-100 dark:bg-green-500/20 text-green-700 dark:text-green-400 text-xs xs:text-sm font-bold"
         >
           -0%
         </div>
         <div class="flex flex-col items-end">
           <span
-            class="text-xs font-bold text-amber-600 dark:text-yellow-500 uppercase tracking-wider"
+            class="text-[10px] xs:text-xs font-bold text-amber-600 dark:text-yellow-500 uppercase tracking-wider text-right"
             >{labels.compressed}</span
           >
           <span
             id="compressed-size"
-            class="font-mono text-amber-600 dark:text-yellow-400">0.00 MB</span
+            class="font-mono text-sm xs:text-base text-amber-600 dark:text-yellow-400"
+            >0.00 MB</span
           >
         </div>
       </div>
@@ -127,57 +164,42 @@ const {
       <div
         class="hidden md:block relative w-full aspect-video rounded-2xl overflow-hidden bg-[url('/grid-pattern.svg')] bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-2xl select-none group"
       >
-        <!-- Original Image (Background) -->
+        <!-- Compressed Image (Main View) -->
         <img
-          id="preview-original"
-          class="absolute inset-0 w-full h-full object-contain opacity-50 grayscale transition-all duration-300 group-hover:opacity-100 group-hover:grayscale-0"
+          id="preview-compressed"
+          class="absolute inset-0 w-full h-full object-contain transition-[opacity,filter] duration-300"
         />
 
-        <!-- Compressed Image (Foreground - Clipped) -->
+        <!-- Original Image (Overlay - Hidden by default) -->
         <div
           id="compare-overlay"
-          class="absolute inset-0 w-full h-full border-r-2 border-amber-500 dark:border-yellow-400 bg-slate-50 dark:bg-slate-900"
-          style="clip-path: inset(0 50% 0 0);"
+          class="absolute inset-0 w-full h-full bg-slate-50 dark:bg-slate-900 pointer-events-none opacity-0 transition-opacity duration-200"
         >
           <img
-            id="preview-compressed"
+            id="preview-original"
             class="absolute inset-0 w-full h-full object-contain"
           />
         </div>
 
-        <!-- Slider Handle (Visual) -->
-        <div
-          id="slider-handle"
-          class="absolute top-0 bottom-0 left-1/2 w-1 bg-amber-500 dark:bg-yellow-400 cursor-ew-resize z-20 flex items-center justify-center -translate-x-1/2 hover:scale-110 transition-transform"
-        >
+        <!-- Segmented Control for View Switching -->
+        <div class="absolute bottom-4 left-0 right-0 flex justify-center z-10">
           <div
-            class="w-8 h-8 rounded-full bg-white dark:bg-slate-800 shadow-lg border-2 border-amber-500 dark:border-yellow-400 flex items-center justify-center"
+            class="flex p-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 shadow-lg"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="text-slate-600 dark:text-slate-200"
-              ><path d="m9 18 6-6-6-6"></path></svg
+            <button
+              id="view-original-btn"
+              class="px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-200 text-slate-400 hover:text-white cursor-pointer"
             >
+              Original
+            </button>
+            <button
+              id="view-compressed-btn"
+              class="px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-200 bg-amber-500 text-white shadow-sm cursor-pointer"
+            >
+              Compressed
+            </button>
           </div>
         </div>
-
-        <!-- Invisible Range Input (Interaction) -->
-        <input
-          type="range"
-          id="compare-slider"
-          min="0"
-          max="100"
-          value="50"
-          class="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-30"
-        />
 
         <!-- Loading Overlay -->
         <div
@@ -200,34 +222,10 @@ const {
         <div
           class="absolute top-4 right-4 z-50 flex items-center gap-2 p-1.5 rounded-lg bg-black/60 backdrop-blur-md border border-white/10 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"
         >
-          <!-- Pan Toggle -->
-          <button
-            id="pan-toggle"
-            class="p-1.5 rounded-md text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
-            title="Toggle Pan Mode (Spacebar)"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              ><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"></path><path
-                d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"></path><path
-                d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"></path><path
-                d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"
-              ></path></svg
-            >
-          </button>
-          <div class="w-px h-4 bg-white/20 mx-0.5"></div>
           <!-- Zoom Out -->
           <button
             id="zoom-out-btn"
-            class="p-1.5 rounded-md text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
+            class="p-1.5 rounded-md text-slate-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -256,7 +254,7 @@ const {
           <!-- Zoom In -->
           <button
             id="zoom-in-btn"
-            class="p-1.5 rounded-md text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
+            class="p-1.5 rounded-md text-slate-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -317,777 +315,1095 @@ const {
         </div>
       </div>
     </div>
+  </div>
+</div>
 
-    <p
-      class="hidden md:block text-center text-xs text-slate-400 dark:text-slate-500"
+<!-- Controls Sticky Bar -->
+<div
+  id="controls-section"
+  class="hidden relative mt-6 z-40 p-3 sm:p-4 rounded-xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border border-slate-200 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-black/50 flex flex-col gap-3 sm:gap-4"
+>
+  <!-- PNG Hint & Options -->
+  <div class="flex flex-col gap-2">
+    <!-- Output Format Selection -->
+    <div
+      class="flex flex-col xs:flex-row items-start xs:items-center justify-between p-2 xs:p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-800 gap-2 xs:gap-0"
     >
-      Drag slider to compare • <span class="text-amber-600 dark:text-yellow-400"
-        >Original (Left)</span
-      > vs <span class="text-amber-600 dark:text-yellow-400"
-        >Compressed (Right)</span
+      <span
+        class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400"
+        >{labels.outputFormat}</span
       >
-    </p>
+      <div
+        class="flex w-full xs:w-auto p-1 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700"
+      >
+        <button
+          id="format-original"
+          class="flex-1 xs:flex-none px-3 py-1 text-xs font-bold rounded-md bg-amber-100 dark:bg-yellow-400/20 text-amber-700 dark:text-yellow-400 shadow-sm transition-all cursor-pointer"
+          >Original</button
+        >
+        <button
+          id="format-webp"
+          class="flex-1 xs:flex-none px-3 py-1 text-xs font-bold rounded-md text-slate-500 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition-all cursor-pointer"
+          >WebP</button
+        >
+      </div>
+    </div>
 
-    <p class="md:hidden text-center text-xs text-slate-400 dark:text-slate-500">
-      Results shown are final. Zoom or Hold to verify.
-    </p>
+    <!-- WebP Efficiency Badge (Hidden by default) -->
+    <div
+      id="webp-badge"
+      class="hidden p-3 rounded bg-green-50 dark:bg-green-500/10 border border-green-100 dark:border-green-500/20 text-xs text-green-600 dark:text-green-300 flex items-start gap-2"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="shrink-0 mt-0.5"
+        ><path d="M12 2v4"></path><path d="m16.2 7.8 2.9-2.9"></path><path
+          d="M18 12h4"></path><path d="m16.2 16.2 2.9 2.9"></path><path
+          d="M12 18v4"></path><path d="m7.8 16.2-2.9 2.9"></path><path
+          d="M2 12h4"></path><path d="m7.8 7.8-2.9-2.9"></path><circle
+          cx="12"
+          cy="12"
+          r="3"></circle></svg
+      >
+      <span
+        ><strong>{labels.webpBadgeTitle}</strong> {labels.webpBadgeDesc}</span
+      >
+    </div>
   </div>
 
-  <!-- Controls Sticky Bar -->
-  <div
-    id="controls-section"
-    class="hidden sticky bottom-4 z-50 p-4 rounded-xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border border-slate-200 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-black/50 flex flex-col gap-4"
-  >
-    <!-- PNG Hint & Options -->
-    <div class="flex flex-col gap-2">
-      <!-- Output Format Selection -->
-      <div
-        class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-800"
-      >
-        <span
-          class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400"
-          >Output Format</span
-        >
-        <div
-          class="flex p-1 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700"
-        >
+  <div class="flex flex-col md:flex-row items-center gap-4 sm:gap-6">
+    <div class="w-full md:w-1/2 flex flex-col gap-3">
+      <!-- Manual Controls -->
+      <div class="flex flex-col gap-2 transition-all duration-300">
+        <!-- Quality Presets -->
+        <div class="flex gap-2 mb-1">
           <button
-            id="format-original"
-            class="px-3 py-1 text-xs font-bold rounded-md bg-amber-100 dark:bg-yellow-400/20 text-amber-700 dark:text-yellow-400 shadow-sm transition-all"
-            >Original</button
+            class="quality-preset flex-1 px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-amber-100 dark:hover:bg-yellow-400/10 hover:text-amber-600 dark:hover:text-yellow-400 hover:border-amber-200 dark:hover:border-yellow-400/50 transition-all cursor-pointer"
+            data-quality="92">{labels.presets.high}</button
           >
           <button
-            id="format-webp"
-            class="px-3 py-1 text-xs font-bold rounded-md text-slate-500 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition-all"
-            >WebP</button
+            class="quality-preset flex-1 px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-amber-100 dark:hover:bg-yellow-400/10 hover:text-amber-600 dark:hover:text-yellow-400 hover:border-amber-200 dark:hover:border-yellow-400/50 transition-all cursor-pointer"
+            data-quality="75">{labels.presets.balanced}</button
+          >
+          <button
+            class="quality-preset flex-1 px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-amber-100 dark:hover:bg-yellow-400/10 hover:text-amber-600 dark:hover:text-yellow-400 hover:border-amber-200 dark:hover:border-yellow-400/50 transition-all cursor-pointer"
+            data-quality="50">{labels.presets.max}</button
           >
         </div>
-      </div>
 
-      <!-- WebP Efficiency Badge (Hidden by default) -->
-      <div
-        id="webp-badge"
-        class="hidden p-3 rounded bg-green-50 dark:bg-green-500/10 border border-green-100 dark:border-green-500/20 text-xs text-green-600 dark:text-green-300 flex items-start gap-2"
+        <div
+          class="flex justify-between text-xs font-medium text-slate-500 dark:text-slate-400"
+        >
+          <span>{labels.quality}</span>
+          <span
+            id="quality-value"
+            class="text-amber-600 dark:text-yellow-400 font-bold">75%</span
+          >
+        </div>
+        <input
+          type="range"
+          id="quality-slider"
+          min="10"
+          max="100"
+          value="75"
+          class="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500 dark:accent-yellow-400 hover:accent-amber-400 dark:hover:accent-yellow-300"
+        />
+      </div>
+    </div>
+
+    <div
+      class="w-full md:w-1/2 flex flex-col xs:grid xs:grid-cols-[auto_1fr_auto] gap-3 xs:gap-2 md:flex md:gap-3"
+    >
+      <button
+        id="reset-btn"
+        class="h-12 w-full xs:w-12 aspect-auto xs:aspect-square rounded-lg bg-red-50 hover:bg-red-100 dark:bg-red-500/10 dark:hover:bg-red-500/20 text-red-600 dark:text-red-500 font-medium transition-colors cursor-pointer flex items-center justify-center border border-red-100 dark:border-transparent md:w-auto md:aspect-auto md:px-4"
+        title={labels.reset}
       >
+        <span class="xs:hidden font-bold mr-2">{labels.reset}</span>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
+          width="20"
+          height="20"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
           stroke-width="2"
           stroke-linecap="round"
           stroke-linejoin="round"
-          class="shrink-0 mt-0.5"
-          ><path d="M12 2v4"></path><path d="m16.2 7.8 2.9-2.9"></path><path
-            d="M18 12h4"></path><path d="m16.2 16.2 2.9 2.9"></path><path
-            d="M12 18v4"></path><path d="m7.8 16.2-2.9 2.9"></path><path
-            d="M2 12h4"></path><path d="m7.8 7.8-2.9-2.9"></path><circle
-            cx="12"
-            cy="12"
-            r="3"></circle></svg
+          class="lucide lucide-trash-2"
+          ><path d="M3 6h18"></path><path
+            d="M19 6v14c0 1-1 2-2 2H5c-1 0-2-1-2-2V6"></path><path
+            d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line
+            x1="10"
+            x2="10"
+            y1="11"
+            y2="17"></line><line x1="14" x2="14" y1="11" y2="17"></line></svg
         >
-        <span
-          ><strong>WebP Mode:</strong> Best for big files. Converts images to next-gen
-          WebP format for maximum compression.</span
-        >
-      </div>
-    </div>
+      </button>
 
-    <div class="flex flex-col md:flex-row items-center gap-6">
-      <div class="w-full md:w-1/2 flex flex-col gap-3">
-        <!-- Manual Controls -->
-        <div class="flex flex-col gap-2 transition-all duration-300">
-          <!-- Quality Presets -->
-          <div class="flex gap-2 mb-1">
-            <button
-              class="quality-preset px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-amber-100 dark:hover:bg-yellow-400/10 hover:text-amber-600 dark:hover:text-yellow-400 hover:border-amber-200 dark:hover:border-yellow-400/50 transition-all"
-              data-quality="92">High</button
-            >
-            <button
-              class="quality-preset px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-amber-100 dark:hover:bg-yellow-400/10 hover:text-amber-600 dark:hover:text-yellow-400 hover:border-amber-200 dark:hover:border-yellow-400/50 transition-all"
-              data-quality="75">Balanced</button
-            >
-            <button
-              class="quality-preset px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-amber-100 dark:hover:bg-yellow-400/10 hover:text-amber-600 dark:hover:text-yellow-400 hover:border-amber-200 dark:hover:border-yellow-400/50 transition-all"
-              data-quality="50">Max</button
-            >
-          </div>
-
-          <div
-            class="flex justify-between text-xs font-medium text-slate-500 dark:text-slate-400"
-          >
-            <span>{labels.quality}</span>
-            <span
-              id="quality-value"
-              class="text-amber-600 dark:text-yellow-400 font-bold">75%</span
-            >
-          </div>
-          <input
-            type="range"
-            id="quality-slider"
-            min="10"
-            max="100"
-            value="75"
-            class="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500 dark:accent-yellow-400 hover:accent-amber-400 dark:hover:accent-yellow-300"
-          />
-        </div>
-      </div>
-
-      <div class="w-full md:w-1/2 flex gap-3">
-        <button
-          id="reset-btn"
-          class="px-4 py-3 rounded-lg bg-red-50 hover:bg-red-100 dark:bg-red-500/10 dark:hover:bg-red-500/20 text-red-600 dark:text-red-500 font-medium transition-colors cursor-pointer flex items-center justify-center border border-red-100 dark:border-transparent"
-          title="Reset"
+      <button
+        id="download-btn"
+        class="h-12 flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-amber-400 hover:bg-amber-500 dark:bg-yellow-400 dark:hover:bg-yellow-500 active:bg-amber-600 dark:active:bg-yellow-600 text-slate-900 font-bold transition-all hover:-translate-y-0.5 shadow-lg shadow-amber-400/20 dark:shadow-yellow-400/20 active:scale-95 cursor-pointer text-xs xs:text-sm md:text-base leading-tight"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="shrink-0"
+          ><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline
+            points="7 10 12 15 17 10"></polyline><line
+            x1="12"
+            x2="12"
+            y1="15"
+            y2="3"></line></svg
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="lucide lucide-trash-2"
-            ><path d="M3 6h18"></path><path
-              d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path
-              d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line
-              x1="10"
-              x2="10"
-              y1="11"
-              y2="17"></line><line x1="14" x2="14" y1="11" y2="17"></line></svg
-          >
-        </button>
-        <button
-          id="download-btn"
-          class="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-amber-400 hover:bg-amber-500 dark:bg-yellow-400 dark:hover:bg-yellow-500 active:bg-amber-600 dark:active:bg-yellow-600 text-slate-900 font-bold transition-all hover:-translate-y-0.5 shadow-lg shadow-amber-400/20 dark:shadow-yellow-400/20 active:scale-95 cursor-pointer"
+        <span>{labels.download}</span>
+      </button>
+
+      <!-- Download All Button (Hidden by default) -->
+      <button
+        id="download-all-btn"
+        class="hidden h-12 flex-1 items-center justify-center gap-2 px-4 py-3 rounded-lg bg-slate-800 hover:bg-slate-700 dark:bg-slate-700 dark:hover:bg-slate-600 text-white font-bold transition-all hover:-translate-y-0.5 shadow-lg active:scale-95 cursor-pointer text-xs xs:text-sm md:text-base leading-tight"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="shrink-0"
+          ><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline
+            points="7 10 12 15 17 10"></polyline><line
+            x1="12"
+            x2="12"
+            y1="15"
+            y2="3"></line><line x1="8" x2="16" y1="13" y2="13"></line></svg
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            ><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
-            ></path><polyline points="7 10 12 15 17 10"></polyline><line
-              x1="12"
-              x2="12"
-              y1="15"
-              y2="3"></line></svg
-          >
-          {labels.download}
-        </button>
-      </div>
+        <span>{labels.downloadAll}</span>
+      </button>
+
+      <button
+        id="copy-btn"
+        class="h-12 w-full xs:w-12 aspect-auto xs:aspect-square rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold transition-all border border-slate-200 dark:border-slate-700 flex items-center justify-center cursor-pointer relative md:w-auto md:aspect-auto md:px-4 md:gap-2"
+        data-label-copy={labels.copy}
+        data-label-copied={labels.copied}
+        data-label-error={labels.error}
+        title={labels.copy}
+      >
+        <span class="hidden md:inline font-bold">{labels.copy}</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="shrink-0"
+          ><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path
+            d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"
+          ></path></svg
+        >
+      </button>
     </div>
   </div>
+</div>
 
-  <script>
-    import Compressor from "compressorjs";
+<script>
+  import Compressor from "compressorjs";
+  import JSZip from "jszip";
 
-    // State
-    let originalFile: File | null = null;
-    let compressedBlob: Blob | null = null;
+  interface CompressedImage {
+    id: string;
+    originalFile: File;
+    compressedBlob: Blob | null;
+    settings: {
+      quality: number;
+      format: string; // 'original' | 'webp'
+    };
+    status: "pending" | "processing" | "done" | "error";
+    previewOriginal: string; // Object URL
+    previewCompressed: string | null; // Object URL
+  }
 
-    // Elements
-    const uploadZone = document.getElementById("upload-zone");
-    const fileInput = document.getElementById("file-input") as HTMLInputElement;
-    const loadingState = document.getElementById("loading-state");
-    const workspace = document.getElementById("workspace");
-    const controlsSection = document.getElementById("controls-section");
+  // State
+  let images: CompressedImage[] = [];
+  let activeImageId: string | null = null;
+  let processingQueue: string[] = [];
 
-    const previewOriginal = document.getElementById(
-      "preview-original",
-    ) as HTMLImageElement;
-    const previewCompressed = document.getElementById(
-      "preview-compressed",
-    ) as HTMLImageElement;
-    const compressionLoader = document.getElementById("compression-loader");
+  // Elements
+  const uploadZone = document.getElementById("upload-zone");
+  const fileInput = document.getElementById("file-input") as HTMLInputElement;
+  const loadingState = document.getElementById("loading-state");
+  const workspace = document.getElementById("workspace");
+  const imageStrip = document.getElementById("image-strip");
+  const controlsSection = document.getElementById("controls-section");
 
-    // Mobile Elements
-    const mobileContainer = document.getElementById("mobile-compare-container");
-    const mobilePreview = document.getElementById(
-      "mobile-preview",
-    ) as HTMLImageElement;
-    const mobilePreloadOriginal = document.getElementById(
-      "mobile-preload-original",
-    ) as HTMLImageElement;
-    const mobileBadge = document.getElementById("mobile-badge");
-    const mobileLoader = document.getElementById("mobile-loader");
+  const previewOriginal = document.getElementById(
+    "preview-original",
+  ) as HTMLImageElement;
+  const previewCompressed = document.getElementById(
+    "preview-compressed",
+  ) as HTMLImageElement;
+  const compressionLoader = document.getElementById("compression-loader");
 
-    const originalSize = document.getElementById("original-size");
-    const compressedSize = document.getElementById("compressed-size");
-    const savingsBadge = document.getElementById("savings-badge");
+  // Mobile Elements
+  const mobileContainer = document.getElementById("mobile-compare-container");
+  const mobilePreview = document.getElementById(
+    "mobile-preview",
+  ) as HTMLImageElement;
+  const mobilePreloadOriginal = document.getElementById(
+    "mobile-preload-original",
+  ) as HTMLImageElement;
+  const mobileBadge = document.getElementById("mobile-badge");
+  const mobileLoader = document.getElementById("mobile-loader");
 
-    const qualitySlider = document.getElementById(
-      "quality-slider",
-    ) as HTMLInputElement;
-    const qualityValue = document.getElementById("quality-value");
-    const downloadBtn = document.getElementById("download-btn");
-    const resetBtn = document.getElementById("reset-btn");
-    const presetBtns = document.querySelectorAll(".quality-preset");
+  const originalSize = document.getElementById("original-size");
+  const compressedSize = document.getElementById("compressed-size");
+  const savingsBadge = document.getElementById("savings-badge");
 
-    // Format Controls
-    const formatOriginalBtn = document.getElementById("format-original");
-    const formatWebPBtn = document.getElementById("format-webp");
-    const webpBadge = document.getElementById("webp-badge");
+  const qualitySlider = document.getElementById(
+    "quality-slider",
+  ) as HTMLInputElement;
+  const qualityValue = document.getElementById("quality-value");
+  const downloadBtn = document.getElementById("download-btn");
+  const downloadAllBtn = document.getElementById("download-all-btn");
+  const resetBtn = document.getElementById("reset-btn");
+  const presetBtns = document.querySelectorAll(".quality-preset");
 
-    let outputFormat = "original"; // 'original' | 'webp'
+  // Format Controls
+  const formatOriginalBtn = document.getElementById("format-original");
+  const formatWebPBtn = document.getElementById("format-webp");
+  const webpBadge = document.getElementById("webp-badge");
+  const copyBtn = document.getElementById("copy-btn");
+  const copyText = document.getElementById("copy-text");
 
-    // Zoom & Pan State
-    let zoomLevel = 1;
-    let panMode = false;
-    let panOffset = { x: 0, y: 0 };
-    let isDragging = false;
-    let dragStart = { x: 0, y: 0 };
+  // Zoom & Pan State
+  let zoomLevel = 1;
+  let panOffset = { x: 0, y: 0 };
+  let isDragging = false;
+  let dragStart = { x: 0, y: 0 };
 
-    // Zoom Controls
-    const zoomInBtn = document.getElementById("zoom-in-btn");
-    const zoomOutBtn = document.getElementById("zoom-out-btn");
-    const zoomValue = document.getElementById("zoom-value");
-    const panToggle = document.getElementById("pan-toggle");
-    const desktopContainer = document.querySelector(".hidden.md\\:block"); // Select the desktop container wrapper
+  // Zoom Controls
+  const zoomInBtn = document.getElementById("zoom-in-btn");
+  const zoomOutBtn = document.getElementById("zoom-out-btn");
+  const zoomValue = document.getElementById("zoom-value");
+  const desktopContainer = document.querySelector(".hidden.md\\:block");
 
-    // Comparison logic
-    const compareOverlay = document.getElementById("compare-overlay");
-    const sliderHandle = document.getElementById("slider-handle");
-    const compareSlider = document.getElementById(
-      "compare-slider",
-    ) as HTMLInputElement;
+  // Comparison logic
+  const compareOverlay = document.getElementById("compare-overlay");
+  const viewOriginalBtn = document.getElementById("view-original-btn");
+  const viewCompressedBtn = document.getElementById("view-compressed-btn");
 
-    // Format Bytes
-    function formatBytes(bytes: number, decimals = 2) {
-      if (bytes === 0) return "0 Bytes";
-      const k = 1024;
-      const dm = decimals < 0 ? 0 : decimals;
-      const sizes = ["Bytes", "KB", "MB", "GB"];
-      const i = Math.floor(Math.log(bytes) / Math.log(k));
-      return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
-    }
+  let isShowingOriginal = false;
 
-    // Handle Logic
-    async function handleFile(file: File) {
-      if (!file || !file.type.startsWith("image/")) return;
+  // Format Bytes
+  function formatBytes(bytes: number, decimals = 2) {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ["Bytes", "KB", "MB", "GB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+  }
 
-      originalFile = file;
+  // --- Core Logic ---
 
-      // Smart Defaults based on file type
-      if (file.type === "image/png") {
-        outputFormat = "webp";
-      } else {
-        outputFormat = "original";
-      }
-      updateFormatUI();
+  async function handleFiles(files: FileList | File[]) {
+    const newFiles = Array.from(files).filter((file) =>
+      file.type.startsWith("image/"),
+    );
+    if (newFiles.length === 0) return;
 
-      // UI Update: Show Loading
+    // UI Update: Show Loading State briefly if first upload
+    if (images.length === 0) {
       uploadZone?.classList.add("hidden");
       workspace?.classList.add("hidden");
       loadingState?.classList.remove("hidden");
       loadingState?.classList.add("flex");
-
-      // Show Controls
-      controlsSection?.classList.remove("hidden");
-      controlsSection?.classList.add("flex");
-
-      // Display Original
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        if (previewOriginal && e.target) {
-          // @ts-ignore
-          previewOriginal.src = e.target.result as string;
-          // Also set compressed preview initially to avoid empty flash
-          // @ts-ignore
-          if (previewCompressed)
-            previewCompressed.src = e.target.result as string;
-
-          if (mobilePreview) mobilePreview.src = e.target.result as string;
-          if (mobilePreloadOriginal)
-            mobilePreloadOriginal.src = e.target.result as string;
-
-          // Reset Zoom/Pan on new file
-          zoomLevel = 1;
-          panOffset = { x: 0, y: 0 };
-          updateTransform();
-          updateZoomUI();
-        }
-      };
-      reader.readAsDataURL(file);
-      if (originalSize) originalSize.textContent = formatBytes(file.size);
-
-      // Initial Compression
-      await compressImage();
-
-      // UI Update: Show Workspace
-      loadingState?.classList.remove("flex");
-      loadingState?.classList.add("hidden");
-      workspace?.classList.remove("hidden");
-      workspace?.classList.add("flex");
     }
 
-    async function compressImage() {
-      if (!originalFile) return;
+    // Process new files
+    for (const file of newFiles) {
+      const id = Math.random().toString(36).substr(2, 9);
+      const isPng = file.type === "image/png";
+      const objectUrl = URL.createObjectURL(file);
 
-      const file = originalFile; // TS fix
+      const newImage: CompressedImage = {
+        id,
+        originalFile: file,
+        compressedBlob: null,
+        settings: {
+          quality: 0.75, // Default 75%
+          format: isPng ? "webp" : "original",
+        },
+        status: "pending",
+        previewOriginal: objectUrl,
+        previewCompressed: null,
+      };
 
-      // Show Loader
+      images.push(newImage);
+      // Trigger compression immediately
+      compressImage(id);
+    }
+
+    // If this was the first batch, set active image to the first one
+    if (!activeImageId && images.length > 0) {
+      // Simulate a small delay for the loading state to be visible (optional, but nice)
+      setTimeout(() => {
+        loadingState?.classList.remove("flex");
+        loadingState?.classList.add("hidden");
+        workspace?.classList.remove("hidden");
+        workspace?.classList.add("flex");
+        controlsSection?.classList.remove("hidden");
+        controlsSection?.classList.add("flex");
+
+        setActiveImage(images[images.length - newFiles.length].id);
+      }, 600);
+    } else {
+      renderImageStrip();
+    }
+  }
+
+  function setActiveImage(id: string) {
+    activeImageId = id;
+    const img = images.find((i) => i.id === id);
+    if (!img) return;
+
+    // Update Workspace View
+    if (previewOriginal) previewOriginal.src = img.previewOriginal;
+    if (mobilePreloadOriginal) mobilePreloadOriginal.src = img.previewOriginal;
+
+    // If we have a compressed version, show it. Else fallback to original (UI will show loading via stats/loader)
+    if (img.previewCompressed) {
+      if (previewCompressed) previewCompressed.src = img.previewCompressed;
+      if (mobilePreview) mobilePreview.src = img.previewCompressed;
+    } else {
+      // If processing, maybe show original or verify loader state
+    }
+
+    // Reset View State
+    isShowingOriginal = false;
+    updateView(); // Reset comparison buttons
+
+    // Reset Zoom
+    zoomLevel = 1;
+    panOffset = { x: 0, y: 0 };
+    updateTransform();
+    updateZoomUI();
+
+    // Update Controls to match this image's settings
+    if (qualitySlider) {
+      qualitySlider.value = (img.settings.quality * 100).toString();
+      if (qualityValue)
+        qualityValue.textContent = `${Math.round(img.settings.quality * 100)}%`;
+    }
+
+    updateFormatUI(img.settings.format);
+    updateStatsUI(img);
+    renderImageStrip(); // Update highlights
+  }
+
+  function renderImageStrip() {
+    if (!imageStrip) return;
+    imageStrip.innerHTML = "";
+
+    // "Add More" Button
+    const addBtn = document.createElement("div");
+    addBtn.className =
+      "flex-shrink-0 w-20 h-20 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-amber-400 dark:hover:border-yellow-400 flex items-center justify-center cursor-pointer transition-colors text-slate-400 hover:text-amber-500 bg-slate-50 dark:bg-slate-900/50";
+    addBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="5" y2="19"></line><line x1="5" x2="19" y1="12" y2="12"></line></svg>`;
+    addBtn.onclick = () => fileInput?.click();
+    imageStrip.appendChild(addBtn);
+
+    images.forEach((img) => {
+      const isSelected = img.id === activeImageId;
+      const el = document.createElement("div");
+      el.className = `relative flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden cursor-pointer border-2 transition-all ${isSelected ? "border-amber-500 ring-2 ring-amber-500/20" : "border-transparent hover:border-slate-300 dark:hover:border-slate-600"}`;
+
+      const thumb = document.createElement("img");
+      thumb.src = img.previewCompressed || img.previewOriginal;
+      thumb.className = "w-full h-full object-cover";
+      el.appendChild(thumb);
+
+      // Loading Overlay
+      if (img.status === "processing") {
+        const loader = document.createElement("div");
+        loader.className =
+          "absolute inset-0 bg-black/50 flex items-center justify-center";
+        loader.innerHTML = `<div class="w-5 h-5 border-2 border-white/60 border-t-white rounded-full animate-spin"></div>`;
+        el.appendChild(loader);
+      }
+
+      // Remove Button (Hover/Always visible on mobile)
+      const removeBtn = document.createElement("button");
+      removeBtn.className =
+        "absolute top-1 right-1 p-1 rounded-full bg-red-500 text-white opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity shadow-sm hover:bg-red-600 z-10";
+      removeBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="6" y1="6" y2="18"></line><line x1="6" x2="18" y1="6" y2="18"></line></svg>`;
+      removeBtn.onclick = (e) => {
+        e.stopPropagation();
+        removeImage(img.id);
+      };
+
+      el.classList.add("group");
+      el.appendChild(removeBtn);
+
+      el.onclick = () => setActiveImage(img.id);
+      imageStrip.appendChild(el);
+    });
+    updateDownloadAllVisibility();
+  }
+
+  function removeImage(id: string) {
+    const index = images.findIndex((i) => i.id === id);
+    if (index === -1) return;
+
+    const wasActive = activeImageId === id;
+
+    // Cleanup Object URLs to avoid memory leaks
+    URL.revokeObjectURL(images[index].previewOriginal);
+    if (images[index].previewCompressed)
+      URL.revokeObjectURL(images[index].previewCompressed!);
+
+    images.splice(index, 1);
+
+    if (images.length === 0) {
+      resetAll();
+    } else if (wasActive) {
+      // Select previous or next (index now points to next, or is out of bounds)
+      const newIndex = Math.min(index, images.length - 1);
+      setActiveImage(images[newIndex].id);
+    } else {
+      renderImageStrip();
+      updateDownloadAllVisibility();
+    }
+  }
+
+  function resetAll() {
+    images.forEach((img) => {
+      URL.revokeObjectURL(img.previewOriginal);
+      if (img.previewCompressed) URL.revokeObjectURL(img.previewCompressed);
+    });
+    images = [];
+    activeImageId = null;
+
+    // Reset UI
+    workspace?.classList.add("hidden");
+    workspace?.classList.remove("flex");
+    controlsSection?.classList.add("hidden");
+    controlsSection?.classList.remove("flex");
+    uploadZone?.classList.remove("hidden");
+    fileInput.value = "";
+    updateDownloadAllVisibility();
+
+    if (previewOriginal) previewOriginal.src = "";
+    if (previewCompressed) previewCompressed.src = "";
+  }
+
+  // --- Helpers ---
+
+  function updateStatsUI(img: CompressedImage) {
+    if (!img) return;
+    if (originalSize)
+      originalSize.textContent = formatBytes(img.originalFile.size);
+
+    if (img.compressedBlob) {
+      if (compressedSize)
+        compressedSize.textContent = formatBytes(img.compressedBlob.size);
+
+      if (savingsBadge) {
+        const saved = img.originalFile.size - img.compressedBlob.size;
+        const percent = (saved / img.originalFile.size) * 100;
+        savingsBadge.classList.remove("hidden");
+
+        if (percent > 0) {
+          savingsBadge.textContent = `-${Math.round(percent)}%`;
+          savingsBadge.className =
+            "px-3 py-1 rounded-full bg-green-100 dark:bg-green-500/20 text-green-700 dark:text-green-400 text-sm font-bold";
+        } else {
+          savingsBadge.textContent = `+${Math.abs(Math.round(percent))}%`;
+          savingsBadge.className =
+            "px-3 py-1 rounded-full bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-400 text-sm font-bold";
+        }
+      }
+    } else {
+      if (compressedSize) compressedSize.textContent = "...";
+      if (savingsBadge) savingsBadge.classList.add("hidden");
+    }
+  }
+
+  function updateFormatUI(format: string) {
+    if (!formatOriginalBtn || !formatWebPBtn) return;
+    const activeClass =
+      "bg-amber-100 dark:bg-yellow-400/20 text-amber-700 dark:text-yellow-400 shadow-sm";
+    const inactiveClass =
+      "text-slate-500 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300";
+
+    if (format === "original") {
+      formatOriginalBtn.className = `px-3 py-1 text-xs font-bold rounded-md transition-all ${activeClass}`;
+      formatWebPBtn.className = `px-3 py-1 text-xs font-bold rounded-md transition-all ${inactiveClass}`;
+      webpBadge?.classList.add("hidden");
+    } else {
+      formatWebPBtn.className = `px-3 py-1 text-xs font-bold rounded-md transition-all ${activeClass}`;
+      formatOriginalBtn.className = `px-3 py-1 text-xs font-bold rounded-md transition-all ${inactiveClass}`;
+      webpBadge?.classList.remove("hidden");
+    }
+  }
+
+  async function compressImage(id?: string) {
+    const targetId = id || activeImageId;
+    if (!targetId) return;
+
+    const imgIndex = images.findIndex((i) => i.id === targetId);
+    if (imgIndex === -1) return;
+    const img = images[imgIndex];
+
+    // Status Update
+    img.status = "processing";
+    renderImageStrip();
+
+    // Show Loader if active
+    if (activeImageId === targetId) {
       if (compressionLoader) {
         compressionLoader.classList.remove("hidden");
         compressionLoader.classList.add("flex");
       }
-      if (mobileLoader) {
-        mobileLoader.classList.remove("hidden");
-        mobileLoader.classList.add("flex");
-      }
+    }
 
-      const qualityVal = parseInt(qualitySlider.value) / 100;
+    try {
+      // Yield
+      await new Promise((resolve) => setTimeout(resolve, 50));
 
-      if (qualityValue)
-        qualityValue.textContent = `${Math.round(qualityVal * 100)}%`;
-
-      try {
-        // Yield to UI
-        await new Promise((resolve) => setTimeout(resolve, 50));
-
-        const blob = await new Promise<Blob>((resolve, reject) => {
-          new Compressor(file, {
-            quality: qualityVal,
-            maxWidth: undefined, // NO RESIZING explicitly
-            maxHeight: undefined,
-            minWidth: 0,
-            width: undefined,
-            height: undefined,
-            mimeType: outputFormat === "webp" ? "image/webp" : "auto", // Use selected format
-            strict: true, // Strip metadata
-            checkOrientation: true,
-            success(result) {
-              resolve(result);
-            },
-            error(err) {
-              reject(err);
-            },
-          });
+      const blob = await new Promise<Blob>((resolve, reject) => {
+        new Compressor(img.originalFile, {
+          quality: img.settings.quality,
+          maxWidth: undefined,
+          maxHeight: undefined,
+          minWidth: 0,
+          mimeType: img.settings.format === "webp" ? "image/webp" : "auto",
+          strict: true,
+          checkOrientation: true,
+          success(result) {
+            resolve(result);
+          },
+          error(err) {
+            reject(err);
+          },
         });
+      });
 
-        compressedBlob = blob;
+      // Update State
+      if (img.previewCompressed) URL.revokeObjectURL(img.previewCompressed); // cleanup old
+      img.compressedBlob = blob;
+      img.previewCompressed = URL.createObjectURL(blob);
+      img.status = "done";
 
-        // Update Preview
-        if (previewCompressed) {
-          previewCompressed.src = URL.createObjectURL(compressedBlob);
-        }
+      // If active, update view
+      if (activeImageId === targetId) {
+        if (previewCompressed) previewCompressed.src = img.previewCompressed;
+        if (mobilePreview) mobilePreview.src = img.previewCompressed;
+        updateStatsUI(img);
 
-        // Update Mobile Preview
-        if (mobilePreview) {
-          mobilePreview.src = URL.createObjectURL(compressedBlob);
-        }
-
-        // Update Stats
-        if (compressedSize)
-          compressedSize.textContent = formatBytes(compressedBlob.size);
-
-        // Savings
-        if (savingsBadge && originalFile.size > 0) {
-          const saved = originalFile.size - compressedBlob.size;
-          const percent = (saved / originalFile.size) * 100;
-
-          savingsBadge.classList.remove("hidden");
-
-          if (percent > 0) {
-            savingsBadge.textContent = `-${Math.round(percent)}%`;
-            savingsBadge.className =
-              "px-3 py-1 rounded-full bg-green-100 dark:bg-green-500/20 text-green-700 dark:text-green-400 text-sm font-bold";
-          } else {
-            savingsBadge.textContent = `+${Math.abs(Math.round(percent))}%`;
-            savingsBadge.className =
-              "px-3 py-1 rounded-full bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-400 text-sm font-bold";
-          }
-        }
-      } catch (error) {
-        console.error(error);
-      } finally {
-        // Hide Loader
         if (compressionLoader) {
           compressionLoader.classList.remove("flex");
           compressionLoader.classList.add("hidden");
         }
-        if (mobileLoader) {
-          mobileLoader.classList.remove("flex");
-          mobileLoader.classList.add("hidden");
-        }
       }
+      renderImageStrip();
+    } catch (error) {
+      console.error(error);
+      img.status = "error";
+      renderImageStrip();
+    }
+  }
+
+  // --- Event Listeners ---
+
+  // Mobile Interaction logic
+  let touchStartDist = 0;
+  let touchStartZoom = 1;
+
+  const handleTouchStart = (e: TouchEvent) => {
+    // Pinch
+    if (e.touches.length === 2) {
+      touchStartDist = Math.hypot(
+        e.touches[0].pageX - e.touches[1].pageX,
+        e.touches[0].pageY - e.touches[1].pageY,
+      );
+      touchStartZoom = zoomLevel;
+      return;
     }
 
-    // --- Event Listeners ---
-
-    // Mobile Interaction logic
-    let touchStartDist = 0;
-    let touchStartZoom = 1;
-
-    const handleTouchStart = (e: TouchEvent) => {
-      // Pinch
-      if (e.touches.length === 2) {
-        touchStartDist = Math.hypot(
-          e.touches[0].pageX - e.touches[1].pageX,
-          e.touches[0].pageY - e.touches[1].pageY,
-        );
-        touchStartZoom = zoomLevel;
-        return;
-      }
-
-      // Single Touch - Press & Hold OR Pan
-      if (e.touches.length === 1) {
-        if (zoomLevel > 1) {
-          // Prepare for potential Pan
-          // @ts-ignore
-          dragStart = {
-            x: e.touches[0].clientX - panOffset.x,
-            y: e.touches[0].clientY - panOffset.y,
-          };
-        }
-
-        // Start Press & Hold logic (Show Original)
-        if (mobilePreview && mobilePreloadOriginal && mobileBadge) {
-          mobilePreview.src = mobilePreloadOriginal.src;
-          mobileBadge.textContent = "Original";
-          mobileBadge.className =
-            "px-4 py-2 rounded-full bg-amber-500 text-white border border-amber-400 shadow-lg text-sm font-bold transition-all duration-200 scale-105";
-        }
-      }
-    };
-
-    const handleTouchMove = (e: TouchEvent) => {
-      // Pinch
-      if (e.touches.length === 2) {
-        e.preventDefault(); // Device zoom prevent
-        const dist = Math.hypot(
-          e.touches[0].pageX - e.touches[1].pageX,
-          e.touches[0].pageY - e.touches[1].pageY,
-        );
-        const ratio = dist / touchStartDist;
-        zoomLevel = Math.min(4, Math.max(1, touchStartZoom * ratio));
-        // Center pinch? For now just simple zoom
-        updateTransform();
-        return;
-      }
-
-      // Pan
-      if (e.touches.length === 1 && zoomLevel > 1) {
-        e.preventDefault(); // Prevent scroll if zoomed
-        panOffset = {
-          // @ts-ignore
-          x: e.touches[0].clientX - dragStart.x,
-          // @ts-ignore
-          y: e.touches[0].clientY - dragStart.y,
+    // Single Touch - Press & Hold OR Pan
+    if (e.touches.length === 1) {
+      if (zoomLevel > 1) {
+        // Prepare for potential Pan
+        // @ts-ignore
+        dragStart = {
+          x: e.touches[0].clientX - panOffset.x,
+          y: e.touches[0].clientY - panOffset.y,
         };
-        updateTransform();
       }
-    };
 
-    const handleTouchEnd = (e: TouchEvent) => {
-      // If fingers lifted, revert "Press & Hold"
-      if (e.touches.length === 0) {
-        if (mobilePreview && compressedBlob && mobileBadge) {
-          mobilePreview.src = URL.createObjectURL(compressedBlob);
-          mobileBadge.textContent = "Pinch to Zoom • Press & Hold to Compare";
-          mobileBadge.className =
-            "px-4 py-2 rounded-full bg-black/60 backdrop-blur-md text-white border border-white/20 shadow-lg text-xs font-medium transition-all duration-200 text-center";
+      // Start Press & Hold logic (Show Original)
+      if (mobilePreview && mobilePreloadOriginal && mobileBadge) {
+        mobilePreview.src = mobilePreloadOriginal.src;
+        mobileBadge.textContent = "Original";
+        mobileBadge.className =
+          "px-4 py-2 rounded-full bg-amber-500 text-white border border-amber-400 shadow-lg text-sm font-bold transition-all duration-200 scale-105";
+      }
+    }
+  };
+
+  const handleTouchMove = (e: TouchEvent) => {
+    // Pinch
+    if (e.touches.length === 2) {
+      e.preventDefault(); // Device zoom prevent
+      const dist = Math.hypot(
+        e.touches[0].pageX - e.touches[1].pageX,
+        e.touches[0].pageY - e.touches[1].pageY,
+      );
+      const ratio = dist / touchStartDist;
+      zoomLevel = Math.min(4, Math.max(1, touchStartZoom * ratio));
+      // Center pinch? For now just simple zoom
+      updateTransform();
+      return;
+    }
+
+    // Pan
+    if (e.touches.length === 1 && zoomLevel > 1) {
+      e.preventDefault(); // Prevent scroll if zoomed
+      panOffset = {
+        // @ts-ignore
+        x: e.touches[0].clientX - dragStart.x,
+        // @ts-ignore
+        y: e.touches[0].clientY - dragStart.y,
+      };
+      updateTransform();
+    }
+  };
+
+  const handleTouchEnd = (e: TouchEvent) => {
+    // If fingers lifted, revert "Press & Hold"
+    if (e.touches.length === 0) {
+      const activeImg = images.find((i) => i.id === activeImageId);
+      if (
+        mobilePreview &&
+        activeImg &&
+        activeImg.previewCompressed &&
+        mobileBadge
+      ) {
+        mobilePreview.src = activeImg.previewCompressed;
+        mobileBadge.textContent = "Pinch to Zoom • Press & Hold to Compare";
+        mobileBadge.className =
+          "px-4 py-2 rounded-full bg-black/60 backdrop-blur-md text-white border border-white/20 shadow-lg text-xs font-medium transition-all duration-200 text-center";
+      }
+    }
+  };
+
+  // Add context menu prevention for the mobile container
+  mobileContainer?.addEventListener("contextmenu", (e) => e.preventDefault());
+
+  mobileContainer?.addEventListener(
+    "touchstart",
+    handleTouchStart as EventListener,
+    { passive: false },
+  );
+  mobileContainer?.addEventListener(
+    "touchmove",
+    handleTouchMove as EventListener,
+    { passive: false },
+  );
+  mobileContainer?.addEventListener(
+    "touchend",
+    handleTouchEnd as EventListener,
+  );
+  mobileContainer?.addEventListener(
+    "mousedown",
+    handleTouchStart as EventListener,
+  );
+  mobileContainer?.addEventListener("mouseup", handleTouchEnd as EventListener);
+  mobileContainer?.addEventListener(
+    "mouseleave",
+    handleTouchEnd as EventListener,
+  );
+
+  // Unified Comparison Logic
+  function updateView() {
+    if (!compareOverlay || !viewOriginalBtn || !viewCompressedBtn) return;
+
+    if (isShowingOriginal) {
+      compareOverlay.style.opacity = "1";
+      viewOriginalBtn.className =
+        "px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-200 bg-amber-500 text-white shadow-sm";
+      viewCompressedBtn.className =
+        "px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-200 text-slate-400 hover:text-white";
+    } else {
+      compareOverlay.style.opacity = "0";
+      viewCompressedBtn.className =
+        "px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-200 bg-amber-500 text-white shadow-sm";
+      viewOriginalBtn.className =
+        "px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-200 text-slate-400 hover:text-white";
+    }
+  }
+
+  viewOriginalBtn?.addEventListener("click", () => {
+    isShowingOriginal = true;
+    updateView();
+  });
+
+  viewCompressedBtn?.addEventListener("click", () => {
+    isShowingOriginal = false;
+    updateView();
+  });
+
+  // Paste Support
+  document.addEventListener("paste", (e) => {
+    if (e.clipboardData && e.clipboardData.items) {
+      const newFiles: File[] = [];
+      const items = e.clipboardData.items;
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf("image") !== -1) {
+          const blob = items[i].getAsFile();
+          if (blob) newFiles.push(blob);
         }
       }
-    };
+      if (newFiles.length > 0) handleFiles(newFiles);
+    }
+  });
 
-    // Add context menu prevention for the mobile container
-    mobileContainer?.addEventListener("contextmenu", (e) => e.preventDefault());
+  // Upload Zone
+  uploadZone?.addEventListener("click", () => fileInput?.click());
 
-    mobileContainer?.addEventListener(
-      "touchstart",
-      handleTouchStart as EventListener,
-      { passive: false },
-    );
-    mobileContainer?.addEventListener(
-      "touchmove",
-      handleTouchMove as EventListener,
-      { passive: false },
-    );
-    mobileContainer?.addEventListener(
-      "touchend",
-      handleTouchEnd as EventListener,
-    );
-    mobileContainer?.addEventListener(
-      "mousedown",
-      handleTouchStart as EventListener,
-    ); // Fallback
-    mobileContainer?.addEventListener(
-      "mouseup",
-      handleTouchEnd as EventListener,
-    );
-    mobileContainer?.addEventListener(
-      "mouseleave",
-      handleTouchEnd as EventListener,
-    ); // Safety fallback
+  uploadZone?.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    uploadZone.classList.add("bg-yellow-400/10", "border-yellow-400");
+  });
 
-    // Comparison Slider
-    compareSlider?.addEventListener("input", (e) => {
+  uploadZone?.addEventListener("dragleave", (e) => {
+    e.preventDefault();
+    uploadZone.classList.remove("bg-yellow-400/10", "border-yellow-400");
+  });
+
+  uploadZone?.addEventListener("drop", (e) => {
+    e.preventDefault();
+    uploadZone.classList.remove("bg-yellow-400/10", "border-yellow-400");
+    if (e.dataTransfer?.files?.length) {
+      handleFiles(e.dataTransfer.files);
+    }
+  });
+
+  fileInput?.addEventListener("change", (e) => {
+    // @ts-ignore
+    if ((e.target as HTMLInputElement).files?.length) {
       // @ts-ignore
-      const val = e.target.value;
-      if (compareOverlay)
-        compareOverlay.style.clipPath = `inset(0 ${100 - val}% 0 0)`;
-      if (sliderHandle) sliderHandle.style.left = `${val}%`;
-    });
+      handleFiles((e.target as HTMLInputElement).files);
+    }
+  });
 
-    // Upload Zone
-    uploadZone?.addEventListener("click", () => fileInput?.click());
+  // Controls
+  let timeout: any;
+  qualitySlider?.addEventListener("input", () => {
+    const val = qualitySlider.value;
+    if (qualityValue) qualityValue.textContent = `${val}%`;
 
-    uploadZone?.addEventListener("dragover", (e) => {
-      e.preventDefault();
-      uploadZone.classList.add("bg-yellow-400/10", "border-yellow-400");
-    });
+    // Update active image settings immediately
+    const img = images.find((i) => i.id === activeImageId);
+    if (img) {
+      img.settings.quality = parseInt(val) / 100;
+    }
 
-    uploadZone?.addEventListener("dragleave", (e) => {
-      e.preventDefault();
-      uploadZone.classList.remove("bg-yellow-400/10", "border-yellow-400");
-    });
+    // Show loader
+    if (compressionLoader) {
+      compressionLoader.classList.remove("hidden");
+      compressionLoader.classList.add("flex");
+    }
 
-    uploadZone?.addEventListener("drop", (e) => {
-      e.preventDefault();
-      uploadZone.classList.remove("bg-yellow-400/10", "border-yellow-400");
-      if (e.dataTransfer?.files?.length) {
-        handleFile(e.dataTransfer.files[0]);
-      }
-    });
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      compressImage();
+    }, 200);
+  });
 
-    fileInput?.addEventListener("change", (e) => {
+  // Presets
+  presetBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
       // @ts-ignore
-      if ((e.target as HTMLInputElement).files?.length) {
-        // @ts-ignore
-        handleFile((e.target as HTMLInputElement).files[0]);
+      const qual = btn.dataset.quality;
+      if (qualitySlider && qual) {
+        qualitySlider.value = qual;
+        qualitySlider.dispatchEvent(new Event("input"));
       }
     });
+  });
 
-    // Controls
-    let timeout: any;
-    qualitySlider?.addEventListener("input", () => {
-      const val = qualitySlider.value;
-      if (qualityValue) qualityValue.textContent = `${val}%`;
+  downloadBtn?.addEventListener("click", () => {
+    const img = images.find((i) => i.id === activeImageId);
+    if (!img || !img.compressedBlob) return;
 
-      // Show loader immediately on input
-      if (compressionLoader) {
-        compressionLoader.classList.remove("hidden");
-        compressionLoader.classList.add("flex");
+    const url = URL.createObjectURL(img.compressedBlob);
+    const link = document.createElement("a");
+    link.href = url;
+    // Determine extension based on actual blob type
+    let ext = img.originalFile.name.split(".").pop() || "jpg";
+    if (img.compressedBlob.type === "image/webp") ext = "webp";
+    else if (img.compressedBlob.type === "image/jpeg") ext = "jpg";
+    else if (img.compressedBlob.type === "image/png") ext = "png";
+
+    const name = img.originalFile.name.replace(/\.[^/.]+$/, "") || "image";
+    link.download = `${name}-min.${ext}`;
+    link.click();
+
+    // Revoke immediate URL but keep the one in the object
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  });
+
+  copyBtn?.addEventListener("click", async () => {
+    const img = images.find((i) => i.id === activeImageId);
+    if (!img || !img.compressedBlob) return;
+
+    try {
+      let blobToCopy = img.compressedBlob;
+
+      // Convert to PNG if not supported
+      if (img.compressedBlob.type !== "image/png") {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        const image = new Image();
+
+        await new Promise((resolve, reject) => {
+          image.onload = resolve;
+          image.onerror = reject;
+          image.src = img.previewCompressed || "";
+        });
+
+        canvas.width = image.width;
+        canvas.height = image.height;
+        ctx?.drawImage(image, 0, 0);
+
+        const pngBlob = await new Promise<Blob | null>((resolve) =>
+          canvas.toBlob(resolve, "image/png"),
+        );
+
+        if (pngBlob) blobToCopy = pngBlob;
       }
-      if (mobileLoader) {
-        mobileLoader.classList.remove("hidden");
-        mobileLoader.classList.add("flex");
-      }
 
-      clearTimeout(timeout);
-      timeout = setTimeout(() => {
-        compressImage();
-      }, 200);
+      const data = [new ClipboardItem({ [blobToCopy.type]: blobToCopy })];
+      await navigator.clipboard.write(data);
+
+      if (copyText)
+        copyText.textContent = copyBtn.dataset.labelCopied || "Copied!";
+      copyBtn.classList.add(
+        "text-green-600",
+        "dark:text-green-400",
+        "bg-green-50",
+        "dark:bg-green-900/20",
+      );
+
+      setTimeout(() => {
+        if (copyText)
+          copyText.textContent = copyBtn.dataset.labelCopy || "Copy";
+        copyBtn.classList.remove(
+          "text-green-600",
+          "dark:text-green-400",
+          "bg-green-50",
+          "dark:bg-green-900/20",
+        );
+      }, 2000);
+    } catch (err) {
+      console.error("Failed to copy:", err);
+      if (copyText)
+        copyText.textContent = copyBtn.dataset.labelError || "Error";
+      setTimeout(() => {
+        if (copyText)
+          copyText.textContent = copyBtn.dataset.labelCopy || "Copy";
+      }, 2000);
+    }
+  });
+
+  formatOriginalBtn?.addEventListener("click", () => {
+    const img = images.find((i) => i.id === activeImageId);
+    if (!img || img.settings.format === "original") return;
+
+    img.settings.format = "original";
+    updateFormatUI("original");
+
+    if (compressionLoader) {
+      compressionLoader.classList.remove("hidden");
+      compressionLoader.classList.add("flex");
+    }
+    setTimeout(compressImage, 50);
+  });
+
+  formatWebPBtn?.addEventListener("click", () => {
+    const img = images.find((i) => i.id === activeImageId);
+    if (!img || img.settings.format === "webp") return;
+
+    img.settings.format = "webp";
+    updateFormatUI("webp");
+
+    if (compressionLoader) {
+      compressionLoader.classList.remove("hidden");
+      compressionLoader.classList.add("flex");
+    }
+    setTimeout(compressImage, 50);
+  });
+
+  // --- Zoom & Pan Logic (same as before but safer) ---
+  function updateTransform() {
+    const transform = `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})`;
+    if (previewOriginal) previewOriginal.style.transform = transform;
+    if (previewCompressed) previewCompressed.style.transform = transform;
+    if (mobilePreview) mobilePreview.style.transform = transform;
+  }
+
+  function updateZoomUI() {
+    if (zoomValue) zoomValue.textContent = `${Math.round(zoomLevel * 100)}%`;
+    if (desktopContainer)
+      (desktopContainer as HTMLElement).style.cursor = "grab";
+  }
+
+  zoomInBtn?.addEventListener("click", () => {
+    if (zoomLevel < 4) {
+      zoomLevel = Math.min(4, zoomLevel + 0.5);
+      updateTransform();
+      updateZoomUI();
+    }
+  });
+
+  zoomOutBtn?.addEventListener("click", () => {
+    if (zoomLevel > 1) {
+      zoomLevel = Math.max(1, zoomLevel - 0.5);
+      if (zoomLevel === 1) panOffset = { x: 0, y: 0 };
+      updateTransform();
+      updateZoomUI();
+    }
+  });
+
+  if (desktopContainer) {
+    desktopContainer.addEventListener("mousedown", (e) => {
+      // @ts-ignore
+      isDragging = true;
+      // @ts-ignore
+      dragStart = { x: e.clientX - panOffset.x, y: e.clientY - panOffset.y };
+      (desktopContainer as HTMLElement).style.cursor = "grabbing";
+      e.preventDefault();
     });
 
-    // Presets
-    presetBtns.forEach((btn) => {
-      btn.addEventListener("click", () => {
+    window.addEventListener("mousemove", (e) => {
+      // @ts-ignore
+      if (!isDragging) return;
+      e.preventDefault();
+      panOffset = {
         // @ts-ignore
-        const qual = btn.dataset.quality;
-        if (qualitySlider && qual) {
-          qualitySlider.value = qual;
-          // Trigger input event to update text and run debounce
-          qualitySlider.dispatchEvent(new Event("input"));
+        x: e.clientX - dragStart.x,
+        // @ts-ignore
+        y: e.clientY - dragStart.y,
+      };
+      updateTransform();
+    });
+
+    window.addEventListener("mouseup", () => {
+      if (isDragging) {
+        isDragging = false;
+        if (desktopContainer)
+          (desktopContainer as HTMLElement).style.cursor = "grab";
+      }
+    });
+  }
+
+  resetBtn?.addEventListener("click", () => {
+    resetAll();
+  });
+
+  // Download All Logic
+  downloadAllBtn?.addEventListener("click", async () => {
+    if (images.length === 0) return;
+
+    const zip = new JSZip();
+    let processedCount = 0;
+
+    // Show generic loader
+    if (compressionLoader) {
+      compressionLoader.classList.remove("hidden");
+      compressionLoader.classList.add("flex");
+    }
+
+    try {
+      const promises = images.map(async (img) => {
+        let blob = img.compressedBlob;
+        if (!blob) {
+          // If strictly needed, we could force compress here,
+          // but for now we assume they are compressed or we skip/use original?
+          // Let's rely on what we have. If null, maybe use original.
+          blob = img.originalFile;
         }
+
+        let ext = img.originalFile.name.split(".").pop() || "jpg";
+        if (blob.type === "image/webp") ext = "webp";
+        else if (blob.type === "image/jpeg") ext = "jpg";
+        else if (blob.type === "image/png") ext = "png";
+
+        const name = img.originalFile.name.replace(/\.[^/.]+$/, "");
+        // Avoid duplicate names in zip if necessary, but simple for now
+        zip.file(`${name}-min.${ext}`, blob);
+        processedCount++;
       });
-    });
 
-    downloadBtn?.addEventListener("click", () => {
-      if (!compressedBlob) return;
-      const url = URL.createObjectURL(compressedBlob);
+      await Promise.all(promises);
+
+      const content = await zip.generateAsync({ type: "blob" });
+      const url = URL.createObjectURL(content);
       const link = document.createElement("a");
       link.href = url;
-      // Determine extension based on actual blob type
-      let ext = originalFile?.name.split(".").pop() || "jpg";
-      if (compressedBlob.type === "image/webp") ext = "webp";
-      else if (compressedBlob.type === "image/jpeg") ext = "jpg";
-      else if (compressedBlob.type === "image/png") ext = "png";
-
-      const name = originalFile?.name.replace(/\.[^/.]+$/, "") || "image";
-      link.download = `${name}-min.${ext}`;
+      link.download = "images.zip";
       link.click();
-    });
 
-    // Format Toggle Logic
-    function updateFormatUI() {
-      if (!formatOriginalBtn || !formatWebPBtn) return;
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch (err) {
+      console.error("Error zipping files:", err);
+    } finally {
+      if (compressionLoader) {
+        compressionLoader.classList.remove("flex");
+        compressionLoader.classList.add("hidden");
+      }
+    }
+  });
 
-      const activeClass =
-        "bg-amber-100 dark:bg-yellow-400/20 text-amber-700 dark:text-yellow-400 shadow-sm";
-      const inactiveClass =
-        "text-slate-500 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300";
-
-      if (outputFormat === "original") {
-        formatOriginalBtn.className = `px-3 py-1 text-xs font-bold rounded-md transition-all ${activeClass}`;
-        formatWebPBtn.className = `px-3 py-1 text-xs font-bold rounded-md transition-all ${inactiveClass}`;
-        webpBadge?.classList.add("hidden");
+  // Update Download All Button Visibility
+  function updateDownloadAllVisibility() {
+    if (downloadAllBtn) {
+      if (images.length > 1) {
+        downloadAllBtn.classList.remove("hidden");
+        downloadAllBtn.classList.add("flex");
       } else {
-        formatWebPBtn.className = `px-3 py-1 text-xs font-bold rounded-md transition-all ${activeClass}`;
-        formatOriginalBtn.className = `px-3 py-1 text-xs font-bold rounded-md transition-all ${inactiveClass}`;
-        webpBadge?.classList.remove("hidden");
+        downloadAllBtn.classList.add("hidden");
+        downloadAllBtn.classList.remove("flex");
       }
     }
+  }
 
-    formatOriginalBtn?.addEventListener("click", () => {
-      if (outputFormat === "original") return;
-      outputFormat = "original";
-      updateFormatUI();
-      // Trigger re-compression
-      if (compressionLoader) {
-        compressionLoader.classList.remove("hidden");
-        compressionLoader.classList.add("flex");
-      }
-      setTimeout(compressImage, 50);
-    });
-
-    formatWebPBtn?.addEventListener("click", () => {
-      if (outputFormat === "webp") return;
-      outputFormat = "webp";
-      updateFormatUI();
-      // Trigger re-compression
-      if (compressionLoader) {
-        compressionLoader.classList.remove("hidden");
-        compressionLoader.classList.add("flex");
-      }
-      setTimeout(compressImage, 50);
-    });
-
-    // --- Zoom & Pan Logic ---
-
-    function updateTransform() {
-      // Apply transform to both images
-      const transform = `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})`;
-
-      if (previewOriginal) previewOriginal.style.transform = transform;
-      if (previewCompressed) previewCompressed.style.transform = transform;
-      if (mobilePreview) mobilePreview.style.transform = transform;
-    }
-
-    function updateZoomUI() {
-      if (zoomValue) zoomValue.textContent = `${Math.round(zoomLevel * 100)}%`;
-
-      // Update Pan Toggle state
-      if (panToggle) {
-        if (panMode) {
-          panToggle.classList.add("text-amber-400", "bg-white/10");
-          panToggle.classList.remove("text-slate-300");
-          if (desktopContainer)
-            (desktopContainer as HTMLElement).style.cursor = "grab";
-          if (compareSlider) compareSlider.style.pointerEvents = "none";
-        } else {
-          panToggle.classList.remove("text-amber-400", "bg-white/10");
-          panToggle.classList.add("text-slate-300");
-          if (desktopContainer)
-            (desktopContainer as HTMLElement).style.cursor = "default";
-          if (compareSlider) compareSlider.style.pointerEvents = "auto";
-        }
-      }
-    }
-
-    zoomInBtn?.addEventListener("click", () => {
-      if (zoomLevel < 4) {
-        zoomLevel = Math.min(4, zoomLevel + 0.5);
-        updateTransform();
-        updateZoomUI();
-      }
-    });
-
-    zoomOutBtn?.addEventListener("click", () => {
-      if (zoomLevel > 1) {
-        zoomLevel = Math.max(1, zoomLevel - 0.5);
-        // If resetting to 1, maybe reset pan?
-        if (zoomLevel === 1) panOffset = { x: 0, y: 0 };
-        updateTransform();
-        updateZoomUI();
-      }
-    });
-
-    panToggle?.addEventListener("click", () => {
-      panMode = !panMode;
-      updateZoomUI();
-    });
-
-    // Toggle Pan with Spacebar
-    document.addEventListener("keydown", (e) => {
-      if (
-        e.code === "Space" &&
-        !e.repeat &&
-        document.activeElement?.tagName !== "INPUT"
-      ) {
-        e.preventDefault(); // Prevent scrolling
-        panMode = !panMode;
-        updateZoomUI();
-      }
-    });
-
-    // Drag Logic for Pan
-    if (desktopContainer) {
-      desktopContainer.addEventListener("mousedown", (e) => {
-        if (!panMode) return;
-        isDragging = true;
-        // @ts-ignore
-        dragStart = { x: e.clientX - panOffset.x, y: e.clientY - panOffset.y };
-        (desktopContainer as HTMLElement).style.cursor = "grabbing";
-      });
-
-      window.addEventListener("mousemove", (e) => {
-        if (!isDragging || !panMode) return;
-        e.preventDefault();
-        panOffset = {
-          // @ts-ignore
-          x: e.clientX - dragStart.x,
-          // @ts-ignore
-          y: e.clientY - dragStart.y,
-        };
-        updateTransform();
-      });
-
-      window.addEventListener("mouseup", () => {
-        if (isDragging) {
-          isDragging = false;
-          if (panMode && desktopContainer)
-            (desktopContainer as HTMLElement).style.cursor = "grab";
-        }
-      });
-    }
-
-    resetBtn?.addEventListener("click", () => {
-      originalFile = null;
-      compressedBlob = null;
-      fileInput.value = "";
-      workspace?.classList.add("hidden");
-      workspace?.classList.remove("flex");
-      workspace?.classList.remove("flex");
-      uploadZone?.classList.remove("hidden");
-      controlsSection?.classList.add("hidden");
-      controlsSection?.classList.remove("flex");
-      if (previewOriginal) {
-        previewOriginal.src = "";
-        previewOriginal.style.transform = "";
-      }
-      if (previewCompressed) {
-        previewCompressed.src = "";
-        previewCompressed.style.transform = "";
-      }
-      if (mobilePreview) mobilePreview.src = "";
-      if (mobilePreloadOriginal) mobilePreloadOriginal.src = "";
-
-      // Reset Zoom
-      zoomLevel = 1;
-      panOffset = { x: 0, y: 0 };
-      panMode = false;
-      updateZoomUI();
-    });
-  </script>
-</div>
+  // Hook into state changes
+  // We need to call updateDownloadAllVisibility() whenever images change.
+  // We will patch the existing functions in the next steps.
+</script>

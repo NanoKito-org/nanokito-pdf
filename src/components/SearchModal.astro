@@ -1,0 +1,254 @@
+---
+import { Search, X, Command } from "lucide-react";
+import { tools } from "../data/tools";
+import { getLangFromUrl, useTranslations } from "../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+// Filter only implemented tools to show in search
+const searchableTools = tools.filter((tool) =>
+  ["password-generator", "json-formatter", "image-compressor"].includes(
+    tool.id,
+  ),
+);
+---
+
+<div
+  id="search-modal"
+  class="fixed inset-0 z-50 bg-gray-900/50 backdrop-blur-sm hidden opacity-0 transition-opacity duration-200"
+  aria-hidden="true"
+>
+  <div
+    class="fixed left-1/2 top-[10%] -translate-x-1/2 w-full max-w-xl bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-800 transform scale-95 transition-all duration-200 opacity-0"
+    id="search-content"
+  >
+    <!-- Header -->
+    <div
+      class="flex items-center px-4 h-14 border-b border-gray-100 dark:border-gray-800"
+    >
+      <Search className="w-5 h-5 text-gray-400 mr-3" />
+      <input
+        type="text"
+        id="global-search-input"
+        placeholder={t("search.placeholder")}
+        class="flex-1 bg-transparent border-none outline-none text-gray-900 dark:text-gray-100 placeholder-gray-400 h-full text-lg focus:ring-0"
+        autocomplete="off"
+      />
+      <div class="flex items-center gap-2">
+        <kbd
+          class="hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border border-gray-200 dark:border-gray-800 bg-gray-100 dark:bg-gray-800 px-1.5 font-mono text-[10px] font-medium text-gray-500 dark:text-gray-400 opacity-100"
+        >
+          <span class="text-xs">ESC</span>
+        </kbd>
+        <button
+          id="close-search"
+          class="p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md text-gray-500 cursor-pointer"
+        >
+          <X className="w-5 h-5" />
+        </button>
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div class="px-2 py-2 max-h-[60vh] overflow-y-auto" id="search-results">
+      <div class="px-2 py-1.5 text-xs font-semibold text-gray-400 uppercase">
+        {t("search.command")}
+      </div>
+      {
+        searchableTools.map((tool) => (
+          <a
+            href={`/${lang}/tools/${tool.slug}`}
+            class="search-item flex items-center px-3 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800/50 cursor-pointer group transition-colors"
+            data-title={tool.title[lang]}
+            data-desc={tool.description[lang]}
+          >
+            <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-500 group-hover:text-amber-500 group-hover:bg-amber-50 dark:group-hover:bg-amber-900/20 transition-colors mr-3">
+              <Command className="w-4 h-4" />
+            </div>
+            <div class="flex-1">
+              <div class="text-sm font-medium text-gray-900 dark:text-gray-100 group-hover:text-amber-600 dark:group-hover:text-amber-400">
+                {tool.title[lang]}
+              </div>
+              <div class="text-xs text-gray-500 line-clamp-1">
+                {tool.description[lang]}
+              </div>
+            </div>
+          </a>
+        ))
+      }
+      <!-- No Results Message -->
+      <div
+        id="no-results"
+        class="hidden px-4 py-8 text-center text-gray-500 dark:text-gray-400"
+      >
+        {t("search.noResults")}
+      </div>
+    </div>
+
+    <!-- Footer tips -->
+    <div
+      class="hidden sm:flex px-4 py-2 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50 rounded-b-xl items-center justify-between text-xs text-gray-400"
+    >
+      <div class="flex gap-4">
+        <span
+          ><kbd
+            class="font-sans border rounded px-1 min-w-[20px] inline-block text-center mr-1"
+            >↑</kbd
+          ><kbd
+            class="font-sans border rounded px-1 min-w-[20px] inline-block text-center"
+            >↓</kbd
+          > to navigate</span
+        >
+        <span
+          ><kbd
+            class="font-sans border rounded px-1 min-w-[30px] inline-block text-center mr-1"
+            >↵</kbd
+          > to select</span
+        >
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const modal = document.getElementById("search-modal");
+  const modalContent = document.getElementById("search-content");
+  const input = document.getElementById(
+    "global-search-input",
+  ) as HTMLInputElement;
+  const closeBtn = document.getElementById("close-search");
+  const resultsContainer = document.getElementById("search-results");
+  const items = document.querySelectorAll(".search-item");
+  const noResults = document.getElementById("no-results");
+
+  let isOpen = false;
+  let activeIndex = -1;
+
+  function openSearch() {
+    if (isOpen) return;
+    isOpen = true;
+    modal?.classList.remove("hidden");
+    // Trigger reflow
+    void modal?.offsetWidth;
+    modal?.classList.remove("opacity-0");
+    modalContent?.classList.remove("opacity-0", "scale-95");
+    input?.focus();
+    resetSearch();
+  }
+
+  function closeSearch() {
+    if (!isOpen) return;
+    isOpen = false;
+    modal?.classList.add("opacity-0");
+    modalContent?.classList.add("opacity-0", "scale-95");
+
+    setTimeout(() => {
+      modal?.classList.add("hidden");
+    }, 200);
+  }
+
+  function resetSearch() {
+    if (input) input.value = "";
+    filterItems("");
+    activeIndex = -1;
+    updateActiveItem();
+  }
+
+  function filterItems(query: string) {
+    let hasResults = false;
+    const lowerQuery = query.toLowerCase();
+
+    items.forEach((item) => {
+      const el = item as HTMLElement;
+      const title = (el.dataset.title || "").toLowerCase();
+      const desc = (el.dataset.desc || "").toLowerCase();
+
+      if (title.includes(lowerQuery) || desc.includes(lowerQuery)) {
+        el.classList.remove("hidden");
+        hasResults = true;
+      } else {
+        el.classList.add("hidden");
+      }
+    });
+
+    if (noResults) {
+      if (!hasResults && query.length > 0) {
+        noResults.classList.remove("hidden");
+      } else {
+        noResults.classList.add("hidden");
+      }
+    }
+  }
+
+  function updateActiveItem() {
+    const visibleItems = Array.from(items).filter(
+      (item) => !item.classList.contains("hidden"),
+    );
+
+    items.forEach((item) =>
+      item.classList.remove("bg-gray-100", "dark:bg-gray-800"),
+    );
+
+    if (activeIndex >= 0 && activeIndex < visibleItems.length) {
+      visibleItems[activeIndex].classList.add(
+        "bg-gray-100",
+        "dark:bg-gray-800",
+      );
+      visibleItems[activeIndex].scrollIntoView({ block: "nearest" });
+    }
+  }
+
+  // Event Listeners
+
+  // Open triggers
+  document.addEventListener("keydown", (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+      e.preventDefault();
+      if (isOpen) closeSearch();
+      else openSearch();
+    }
+    if (e.key === "Escape" && isOpen) {
+      closeSearch();
+    }
+  });
+
+  // Since triggers are in Header, we need a global event or custom event
+  document.addEventListener("open-search", () => openSearch());
+
+  // Close
+  closeBtn?.addEventListener("click", closeSearch);
+  modal?.addEventListener("click", (e) => {
+    if (e.target === modal) closeSearch();
+  });
+
+  // Filter
+  input?.addEventListener("input", (e) => {
+    filterItems((e.target as HTMLInputElement).value);
+    activeIndex = 0; // Reset to top
+    updateActiveItem();
+  });
+
+  // Keyboard Nav
+  input?.addEventListener("keydown", (e) => {
+    const visibleItems = Array.from(items).filter(
+      (item) => !item.classList.contains("hidden"),
+    );
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      activeIndex = (activeIndex + 1) % visibleItems.length;
+      updateActiveItem();
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      activeIndex =
+        (activeIndex - 1 + visibleItems.length) % visibleItems.length;
+      updateActiveItem();
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      if (activeIndex >= 0 && activeIndex < visibleItems.length) {
+        (visibleItems[activeIndex] as HTMLElement).click();
+      }
+    }
+  });
+</script>

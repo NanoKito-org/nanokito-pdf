@@ -10,10 +10,18 @@ interface Props {
   category: string;
   categorySlug: string; // e.g., 'developer' for linking
   lang: "en" | "fr";
+  maxWidth?: string;
 }
 
-const { title, description, toolName, category, lang, categorySlug } =
-  Astro.props;
+const {
+  title,
+  description,
+  toolName,
+  category,
+  lang,
+  categorySlug,
+  maxWidth = "max-w-4xl",
+} = Astro.props;
 const t = useTranslations(lang);
 
 const breadcrumbs = [
@@ -25,7 +33,7 @@ const breadcrumbs = [
 ---
 
 <Layout title={title} description={description}>
-  <div class="container mx-auto px-4 py-12 max-w-4xl">
+  <div class={`container mx-auto px-4 py-12 ${maxWidth}`}>
     {/* Breadcrumbs */}
     <nav class="flex mb-8 text-sm text-gray-500 dark:text-gray-400">
       <ol class="flex items-center space-x-2 flex-wrap">
