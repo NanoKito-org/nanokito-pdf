@@ -48,9 +48,7 @@ const {
     quality: "Compression Level",
     grayscale: "Grayscale (B&W)",
     grayscaleDesc: "Converts to black & white for maximum reduction",
-    warningTitle: "Visual Compression Mode",
-    warningDesc:
-      "This tool optimizes PDFs by converting pages to compressed images. Text will no longer be selectable/searchable.",
+
     qualityScreen: "Smallest size, low res (72 dpi)",
     qualityEbook: "Best balance of size & quality (150 dpi)",
     qualityPrinter: "High quality for printing (300 dpi)",
@@ -58,34 +56,18 @@ const {
     statusProcessingPage: "Processing page {current} of {total}...",
     statusError: "Error processing file. Engine may not be loaded.",
     zipping: "Zipping...",
-    footer: "Powered by Ghostscript. This tool is for educational/personal use (AGPL License).",
+    footer:
+      "Powered by Ghostscript. This tool is for educational/personal use (AGPL License).",
   },
 } = Astro.props;
 ---
 
-<div 
+<div
   class="w-full max-w-4xl mx-auto space-y-8"
   id="pdf-compressor-app"
   data-labels={JSON.stringify(labels)}
 >
   <!-- Warning Banner -->
-  <div
-    class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50 rounded-xl p-4 flex gap-3 items-start animate-fade-up"
-  >
-    <AlertTriangle
-      className="w-5 h-5 text-amber-600 dark:text-amber-500 flex-shrink-0 mt-0.5"
-    />
-    <div>
-      <h3 class="font-bold text-amber-800 dark:text-amber-400 text-sm mb-1">
-        {labels.warningTitle}
-      </h3>
-      <p
-        class="text-sm text-amber-700 dark:text-amber-300/80 leading-relaxed max-w-2xl"
-      >
-        {labels.warningDesc}
-      </p>
-    </div>
-  </div>
 
   <div
     class="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade-up [animation-delay:100ms]"
@@ -187,7 +169,7 @@ const {
             </div>
           </div>
           <div class="flex items-center gap-1">
-             <button
+            <button
               class="text-slate-400 hover:text-amber-500 transition-colors settings-btn p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
               title="Compression Settings"
             >
@@ -203,27 +185,63 @@ const {
         </div>
 
         <!-- Settings Panel (Visible by default) -->
-        <div class="settings-panel mb-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-800" onclick="event.stopPropagation()">
-             <div class="flex flex-col gap-3">
-                <div class="space-y-2">
-                    <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Quality Profile</label>
-                    <div class="flex gap-2">
-                        <label class="flex-1 cursor-pointer">
-                            <input type="radio" name="quality" value="screen" class="peer sr-only">
-                            <div class="text-center py-1.5 px-2 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-600 dark:text-slate-300 peer-checked:bg-amber-500 peer-checked:text-white peer-checked:border-amber-500 transition-all">Screen</div>
-                        </label>
-                        <label class="flex-1 cursor-pointer">
-                            <input type="radio" name="quality" value="ebook" class="peer sr-only" checked>
-                            <div class="text-center py-1.5 px-2 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-600 dark:text-slate-300 peer-checked:bg-amber-500 peer-checked:text-white peer-checked:border-amber-500 transition-all">eBook</div>
-                        </label>
-                         <label class="flex-1 cursor-pointer">
-                            <input type="radio" name="quality" value="printer" class="peer sr-only">
-                            <div class="text-center py-1.5 px-2 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-600 dark:text-slate-300 peer-checked:bg-amber-500 peer-checked:text-white peer-checked:border-amber-500 transition-all">Printer</div>
-                        </label>
-                    </div>
-                    <p class="text-[10px] text-slate-400 text-center quality-desc">{labels.qualityEbook}</p>
-                </div>
-             </div>
+        <div
+          class="settings-panel mb-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-800"
+          onclick="event.stopPropagation()"
+        >
+          <div class="flex flex-col gap-3">
+            <div class="space-y-2">
+              <label
+                class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"
+                >Quality Profile</label
+              >
+              <div class="flex gap-2">
+                <label class="flex-1 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="quality"
+                    value="screen"
+                    class="peer sr-only"
+                  />
+                  <div
+                    class="text-center py-1.5 px-2 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-600 dark:text-slate-300 peer-checked:bg-amber-500 peer-checked:text-white peer-checked:border-amber-500 transition-all"
+                  >
+                    Screen
+                  </div>
+                </label>
+                <label class="flex-1 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="quality"
+                    value="ebook"
+                    class="peer sr-only"
+                    checked
+                  />
+                  <div
+                    class="text-center py-1.5 px-2 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-600 dark:text-slate-300 peer-checked:bg-amber-500 peer-checked:text-white peer-checked:border-amber-500 transition-all"
+                  >
+                    eBook
+                  </div>
+                </label>
+                <label class="flex-1 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="quality"
+                    value="printer"
+                    class="peer sr-only"
+                  />
+                  <div
+                    class="text-center py-1.5 px-2 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-600 dark:text-slate-300 peer-checked:bg-amber-500 peer-checked:text-white peer-checked:border-amber-500 transition-all"
+                  >
+                    Printer
+                  </div>
+                </label>
+              </div>
+              <p class="text-[10px] text-slate-400 text-center quality-desc">
+                {labels.qualityEbook}
+              </p>
+            </div>
+          </div>
         </div>
 
         <!-- Progress Bar -->
@@ -246,7 +264,10 @@ const {
         </div>
 
         <!-- Success Actions -->
-        <div class="success-actions hidden mt-3 flex items-center gap-3" onclick="event.stopPropagation()">
+        <div
+          class="success-actions hidden mt-3 flex items-center gap-3"
+          onclick="event.stopPropagation()"
+        >
           <button
             class="download-btn flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 rounded-lg text-xs font-bold hover:bg-amber-200 dark:hover:bg-amber-900/50 transition-colors"
           >
@@ -274,7 +295,7 @@ const {
 
   // Set worker source for pdf.js (needed for getDocument)
   // Set worker source for pdf.js (needed for getDocument)
-  pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdfjs/pdf.worker.min.mjs';
+  pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdfjs/pdf.worker.min.mjs";
 
   // State
   interface FileQueueItem {
@@ -285,7 +306,7 @@ const {
     compressedSize?: number;
     blob?: Blob;
     element: HTMLElement;
-    quality: 'screen' | 'ebook' | 'printer';
+    quality: "screen" | "ebook" | "printer";
     totalPages?: number;
     currentProgress: number;
     progressInterval?: number;
@@ -307,10 +328,10 @@ const {
     "download-all-btn",
   ) as HTMLButtonElement;
   const actionBar = document.getElementById("action-bar");
-  
+
   // Get Labels
-  const appContainer = document.getElementById('pdf-compressor-app');
-  const labels = JSON.parse(appContainer?.dataset.labels || '{}');
+  const appContainer = document.getElementById("pdf-compressor-app");
+  const labels = JSON.parse(appContainer?.dataset.labels || "{}");
 
   // --- Upload Logic ---
   dropZone?.addEventListener("click", () => fileInput.click());
@@ -337,13 +358,12 @@ const {
     if (!files) return;
 
     emptyState?.classList.add("hidden");
-    actionBar?.classList.remove("hidden");
 
     Array.from(files).forEach((file) => {
       if (file.type !== "application/pdf") return;
 
       const id = Math.random().toString(36).substr(2, 9);
-      const itemElement = createQueueElement(file, id, 'ebook'); // Default to ebook
+      const itemElement = createQueueElement(file, id, "ebook"); // Default to ebook
       fileList?.appendChild(itemElement);
 
       const item: FileQueueItem = {
@@ -352,20 +372,31 @@ const {
         status: "pending",
         originalSize: file.size,
         element: itemElement,
-        element: itemElement,
-        quality: 'ebook',
-        currentProgress: 0
+
+        quality: "ebook",
+        currentProgress: 0,
       };
 
       queue.push(item);
       processQueue();
     });
 
+    // Update Action Bar Visibility
+    if (queue.length > 1) {
+      actionBar?.classList.remove("hidden");
+    } else {
+      actionBar?.classList.add("hidden");
+    }
+
     // Reset input
     fileInput.value = "";
   }
 
-  function createQueueElement(file: File, id: string, quality: string): HTMLElement {
+  function createQueueElement(
+    file: File,
+    id: string,
+    quality: string,
+  ): HTMLElement {
     const clone = template.content.cloneNode(true) as DocumentFragment;
     const el = clone.querySelector(".file-item") as HTMLElement;
     el.dataset.id = id;
@@ -375,73 +406,84 @@ const {
     el.querySelector(".original-size")!.textContent = formatBytes(file.size);
 
     // Settings UI Logic
-    const settingsBtn = el.querySelector('.settings-btn') as HTMLButtonElement;
-    const settingsPanel = el.querySelector('.settings-panel') as HTMLElement;
+    const settingsBtn = el.querySelector(".settings-btn") as HTMLButtonElement;
+    const settingsPanel = el.querySelector(".settings-panel") as HTMLElement;
     const qualityInputs = el.querySelectorAll('input[name="quality"]');
-    const qualityDesc = el.querySelector('.quality-desc') as HTMLElement;
+    const qualityDesc = el.querySelector(".quality-desc") as HTMLElement;
 
     // Toggle Panel Function
     const togglePanel = () => {
-        settingsPanel.classList.toggle('hidden');
-        settingsBtn.classList.toggle('text-amber-500');
+      settingsPanel.classList.toggle("hidden");
+      settingsBtn.classList.toggle("text-amber-500");
     };
 
     // Card Click
-    el.addEventListener('click', (e) => {
-        const target = e.target as HTMLElement;
-        if (target.closest('button') || target.closest('input') || target.closest('label')) return;
-        togglePanel();
+    el.addEventListener("click", (e) => {
+      const target = e.target as HTMLElement;
+      if (
+        target.closest("button") ||
+        target.closest("input") ||
+        target.closest("label")
+      )
+        return;
+      togglePanel();
     });
 
     // Button Click
-    settingsBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        togglePanel();
+    settingsBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      togglePanel();
     });
 
     // Update Settings State & Re-compress
     const updateAndRecompress = () => {
-        const item = queue.find(i => i.id === id);
-        if (!item) return;
+      const item = queue.find((i) => i.id === id);
+      if (!item) return;
 
-        if (item.status === 'done' || item.status === 'error') {
-            item.status = 'pending';
-            const progressSection = el.querySelector(".progress-section") as HTMLElement;
-            const successActions = el.querySelector(".success-actions") as HTMLElement;
-            
-            progressSection.classList.remove("hidden");
-            successActions.classList.add("hidden");
-            successActions.classList.remove("flex");
-            
-            processQueue();
-        }
+      if (item.status === "done" || item.status === "error") {
+        item.status = "pending";
+        const progressSection = el.querySelector(
+          ".progress-section",
+        ) as HTMLElement;
+        const successActions = el.querySelector(
+          ".success-actions",
+        ) as HTMLElement;
+
+        progressSection.classList.remove("hidden");
+        successActions.classList.add("hidden");
+        successActions.classList.remove("flex");
+
+        processQueue();
+      }
     };
 
-    qualityInputs.forEach(input => {
-        input.addEventListener('change', (e) => {
-            const target = e.target as HTMLInputElement;
-            if (target.checked) {
-                const val = target.value;
-                const item = queue.find(i => i.id === id);
-                if (item) {
-                    item.quality = val as any;
-                    
-                    // Update description
-                    if (val === 'screen') qualityDesc.textContent = labels.qualityScreen;
-                    if (val === 'ebook') qualityDesc.textContent = labels.qualityEbook;
-                    if (val === 'printer') qualityDesc.textContent = labels.qualityPrinter;
+    qualityInputs.forEach((input) => {
+      input.addEventListener("change", (e) => {
+        const target = e.target as HTMLInputElement;
+        if (target.checked) {
+          const val = target.value;
+          const item = queue.find((i) => i.id === id);
+          if (item) {
+            item.quality = val as any;
 
-                    updateAndRecompress();
-                }
-            }
-        });
-        (input as HTMLInputElement).name = `quality-${id}`;
+            // Update description
+            if (val === "screen")
+              qualityDesc.textContent = labels.qualityScreen;
+            if (val === "ebook") qualityDesc.textContent = labels.qualityEbook;
+            if (val === "printer")
+              qualityDesc.textContent = labels.qualityPrinter;
+
+            updateAndRecompress();
+          }
+        }
+      });
+      (input as HTMLInputElement).name = `quality-${id}`;
     });
 
     // Events
     el.querySelector(".remove-btn")!.addEventListener("click", (e) => {
-        e.stopPropagation();
-        removeItem(id);
+      e.stopPropagation();
+      removeItem(id);
     });
 
     return el;
@@ -458,118 +500,139 @@ const {
     updateItemUI(nextItem);
 
     // Disable settings
-    const settingsPanel = nextItem.element.querySelector('.settings-panel');
+    const settingsPanel = nextItem.element.querySelector(".settings-panel");
     if (settingsPanel) {
-        const inputs = settingsPanel.querySelectorAll('input');
-        inputs.forEach(i => i.disabled = true);
-        settingsPanel.classList.add('opacity-50', 'pointer-events-none');
+      const inputs = settingsPanel.querySelectorAll("input");
+      inputs.forEach((i) => (i.disabled = true));
+      settingsPanel.classList.add("opacity-50", "pointer-events-none");
     }
 
     try {
-        const arrayBuffer = await nextItem.file.arrayBuffer();
-        
-        // Get Page Count using pdf.js
-        try {
-            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer.slice(0) }).promise;
-            nextItem.totalPages = pdf.numPages;
-        } catch (err) {
-            console.warn("Could not get page count:", err);
-            nextItem.totalPages = 0;
+      const arrayBuffer = await nextItem.file.arrayBuffer();
+
+      // Get Page Count using pdf.js
+      try {
+        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer.slice(0) })
+          .promise;
+        nextItem.totalPages = pdf.numPages;
+      } catch (err) {
+        console.warn("Could not get page count:", err);
+        nextItem.totalPages = 0;
+      }
+
+      // Start Fake Progress
+      nextItem.currentProgress = 0;
+      nextItem.progressInterval = window.setInterval(() => {
+        if (nextItem.currentProgress < 99) {
+          // Faster initial progress
+          let increment = 1;
+          if (nextItem.currentProgress < 70) {
+            increment = 2; // Very fast start
+          } else if (nextItem.currentProgress < 90) {
+            increment = 0.5; // Slow down a bit
+          } else {
+            increment = 0.1; // Crawl at the end
+          }
+
+          nextItem.currentProgress = Math.min(
+            99,
+            nextItem.currentProgress + increment,
+          );
+
+          const progressBar = nextItem.element.querySelector(
+            ".progress-bar",
+          ) as HTMLElement;
+          const percentage = nextItem.element.querySelector(
+            ".percentage",
+          ) as HTMLElement;
+
+          progressBar.style.width = `${nextItem.currentProgress}%`;
+          percentage.textContent = `${Math.round(nextItem.currentProgress)}%`;
+        }
+      }, 100); // Update every 100ms (faster updates)
+
+      // Spawn One-Shot Worker
+      const worker = new Worker("/workers/ghostscriptWorker.js");
+
+      worker.onmessage = (e) => {
+        const { id, type, success, blob, error, current } = e.data;
+        if (id !== nextItem.id) return;
+
+        if (type === "progress") {
+          const total = nextItem.totalPages || 0;
+          if (total > 0) {
+            const realPercent = Math.round((current / total) * 100);
+            // Always take the higher value (fake vs real)
+            nextItem.currentProgress = Math.max(
+              nextItem.currentProgress,
+              realPercent,
+            );
+
+            const progressBar = nextItem.element.querySelector(
+              ".progress-bar",
+            ) as HTMLElement;
+            const percentage = nextItem.element.querySelector(
+              ".percentage",
+            ) as HTMLElement;
+            const statusText = nextItem.element.querySelector(
+              ".status-text",
+            ) as HTMLElement;
+
+            progressBar.classList.remove("animate-pulse");
+            progressBar.style.width = `${nextItem.currentProgress}%`;
+            percentage.textContent = `${Math.round(nextItem.currentProgress)}%`;
+            statusText.textContent = labels.statusProcessingPage
+              .replace("{current}", current.toString())
+              .replace("{total}", total.toString());
+          } else {
+            // Fallback if we failed to get page count
+            const statusText = nextItem.element.querySelector(
+              ".status-text",
+            ) as HTMLElement;
+            statusText.textContent = labels.statusProcessingPage
+              .replace("{current}", current.toString())
+              .replace(" of {total}", "");
+          }
+          return;
         }
 
-        // Start Fake Progress
-        nextItem.currentProgress = 0;
-        nextItem.progressInterval = window.setInterval(() => {
-            if (nextItem.currentProgress < 99) {
-                // Faster initial progress
-                let increment = 1;
-                if (nextItem.currentProgress < 70) {
-                    increment = 2; // Very fast start
-                } else if (nextItem.currentProgress < 90) {
-                    increment = 0.5; // Slow down a bit
-                } else {
-                    increment = 0.1; // Crawl at the end
-                }
-                
-                nextItem.currentProgress = Math.min(99, nextItem.currentProgress + increment);
-                
-                const progressBar = nextItem.element.querySelector(".progress-bar") as HTMLElement;
-                const percentage = nextItem.element.querySelector(".percentage") as HTMLElement;
-                
-                progressBar.style.width = `${nextItem.currentProgress}%`;
-                percentage.textContent = `${Math.round(nextItem.currentProgress)}%`;
-            }
-        }, 100); // Update every 100ms (faster updates)
+        // Clear interval
+        if (nextItem.progressInterval) clearInterval(nextItem.progressInterval);
 
-        // Spawn One-Shot Worker
-        const worker = new Worker('/workers/ghostscriptWorker.js');
-        
-        worker.onmessage = (e) => {
-            const { id, type, success, blob, error, current } = e.data;
-            if (id !== nextItem.id) return;
+        if (success && blob) {
+          nextItem.blob = blob;
+          nextItem.compressedSize = blob.size;
+          nextItem.status = "done";
+        } else {
+          console.error("Compression failed:", error);
+          nextItem.status = "error";
+        }
 
-            if (type === 'progress') {
-                const total = nextItem.totalPages || 0;
-                if (total > 0) {
-                    const realPercent = Math.round((current / total) * 100);
-                    // Always take the higher value (fake vs real)
-                    nextItem.currentProgress = Math.max(nextItem.currentProgress, realPercent);
-                    
-                    const progressBar = nextItem.element.querySelector(".progress-bar") as HTMLElement;
-                    const percentage = nextItem.element.querySelector(".percentage") as HTMLElement;
-                    const statusText = nextItem.element.querySelector(".status-text") as HTMLElement;
-                    
-                    progressBar.classList.remove("animate-pulse");
-                    progressBar.style.width = `${nextItem.currentProgress}%`;
-                    percentage.textContent = `${Math.round(nextItem.currentProgress)}%`;
-                    statusText.textContent = labels.statusProcessingPage
-                        .replace('{current}', current.toString())
-                        .replace('{total}', total.toString());
-                } else {
-                    // Fallback if we failed to get page count
-                    const statusText = nextItem.element.querySelector(".status-text") as HTMLElement;
-                    statusText.textContent = labels.statusProcessingPage
-                        .replace('{current}', current.toString())
-                        .replace(' of {total}', '');
-                }
-                return;
-            }
+        worker.terminate(); // Cleanup
+        processingCount--;
+        updateItemUI(nextItem);
+        processQueue();
+      };
 
-            // Clear interval
-            if (nextItem.progressInterval) clearInterval(nextItem.progressInterval);
+      worker.onerror = (err) => {
+        console.error("Worker error:", err);
+        if (nextItem.progressInterval) clearInterval(nextItem.progressInterval);
+        nextItem.status = "error";
+        worker.terminate();
+        processingCount--;
+        updateItemUI(nextItem);
+        processQueue();
+      };
 
-            if (success && blob) {
-                nextItem.blob = blob;
-                nextItem.compressedSize = blob.size;
-                nextItem.status = "done";
-            } else {
-                console.error('Compression failed:', error);
-                nextItem.status = "error";
-            }
-            
-            worker.terminate(); // Cleanup
-            processingCount--;
-            updateItemUI(nextItem);
-            processQueue();
-        };
-
-        worker.onerror = (err) => {
-            console.error('Worker error:', err);
-            if (nextItem.progressInterval) clearInterval(nextItem.progressInterval);
-            nextItem.status = "error";
-            worker.terminate();
-            processingCount--;
-            updateItemUI(nextItem);
-            processQueue();
-        };
-
-        // Send to worker
-        worker.postMessage({
-            id: nextItem.id,
-            fileArrayBuffer: arrayBuffer,
-            quality: nextItem.quality
-        }, [arrayBuffer]);
-
+      // Send to worker
+      worker.postMessage(
+        {
+          id: nextItem.id,
+          fileArrayBuffer: arrayBuffer,
+          quality: nextItem.quality,
+        },
+        [arrayBuffer],
+      );
     } catch (e) {
       console.error(e);
       if (nextItem.progressInterval) clearInterval(nextItem.progressInterval);
@@ -588,24 +651,24 @@ const {
     const successActions = el.querySelector(".success-actions") as HTMLElement;
     const arrow = el.querySelector(".arrow") as HTMLElement;
     const newSize = el.querySelector(".new-size") as HTMLElement;
-    const settingsPanel = el.querySelector('.settings-panel') as HTMLElement;
+    const settingsPanel = el.querySelector(".settings-panel") as HTMLElement;
     const statusText = el.querySelector(".status-text") as HTMLElement;
     const progressBar = el.querySelector(".progress-bar") as HTMLElement;
 
     if (item.status === "processing") {
-        statusText.textContent = labels.statusOptimizing;
-        progressBar.classList.add("animate-pulse");
-        progressBar.style.width = "0%"; // Start at 0
+      statusText.textContent = labels.statusOptimizing;
+      progressBar.classList.add("animate-pulse");
+      progressBar.style.width = "0%"; // Start at 0
     } else if (item.status === "done" && item.blob) {
       progressSection.classList.add("hidden");
       successActions.classList.remove("hidden");
       successActions.classList.add("flex");
-      
+
       // Re-enable settings
       if (settingsPanel) {
-        const inputs = settingsPanel.querySelectorAll('input');
-        inputs.forEach(i => i.disabled = false);
-        settingsPanel.classList.remove('opacity-50', 'pointer-events-none');
+        const inputs = settingsPanel.querySelectorAll("input");
+        inputs.forEach((i) => (i.disabled = false));
+        settingsPanel.classList.remove("opacity-50", "pointer-events-none");
       }
 
       // Update Sizes
@@ -626,7 +689,12 @@ const {
           "dark:bg-green-900/20",
           "dark:text-green-400",
         );
-        savingsBadge.classList.remove("bg-red-50", "text-red-600", "dark:bg-red-900/20", "dark:text-red-400");
+        savingsBadge.classList.remove(
+          "bg-red-50",
+          "text-red-600",
+          "dark:bg-red-900/20",
+          "dark:text-red-400",
+        );
       } else {
         savingsBadge.textContent = `+${Math.abs(savedPercent)}%`;
         savingsBadge.classList.add(
@@ -635,7 +703,12 @@ const {
           "dark:bg-red-900/20",
           "dark:text-red-400",
         );
-        savingsBadge.classList.remove("bg-green-50", "text-green-600", "dark:bg-green-900/20", "dark:text-green-400");
+        savingsBadge.classList.remove(
+          "bg-green-50",
+          "text-green-600",
+          "dark:bg-green-900/20",
+          "dark:text-green-400",
+        );
       }
 
       // Setup Download
@@ -656,11 +729,11 @@ const {
       statusText.textContent = labels.statusError;
       progressBar.classList.remove("animate-pulse");
       progressBar.classList.add("bg-red-500");
-       // Re-enable settings even on error to allow retry
+      // Re-enable settings even on error to allow retry
       if (settingsPanel) {
-        const inputs = settingsPanel.querySelectorAll('input');
-        inputs.forEach(i => i.disabled = false);
-        settingsPanel.classList.remove('opacity-50', 'pointer-events-none');
+        const inputs = settingsPanel.querySelectorAll("input");
+        inputs.forEach((i) => (i.disabled = false));
+        settingsPanel.classList.remove("opacity-50", "pointer-events-none");
       }
     }
   }
@@ -682,10 +755,14 @@ const {
 
     if (queue.length === 0) {
       emptyState?.classList.remove("hidden");
+    }
+
+    if (queue.length > 1) {
+      actionBar?.classList.remove("hidden");
+    } else {
       actionBar?.classList.add("hidden");
     }
   }
-
 
   // --- Download All ---
   downloadAllBtn.addEventListener("click", async () => {

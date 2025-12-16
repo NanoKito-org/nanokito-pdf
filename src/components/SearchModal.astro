@@ -7,11 +7,7 @@ const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
 // Filter only implemented tools to show in search
-const searchableTools = tools.filter((tool) =>
-  ["password-generator", "json-formatter", "image-compressor"].includes(
-    tool.id,
-  ),
-);
+const searchableTools = tools;
 ---
 
 <div
