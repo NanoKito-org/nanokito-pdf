@@ -6,8 +6,15 @@ import { getLangFromUrl, useTranslations } from "../i18n/utils";
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
-// Filter only implemented tools to show in search
-const searchableTools = tools;
+// PDF Compressor is hosted on the root of this subdomain
+// All other tools link to nanokito.com
+const searchableTools = tools.map((tool) => ({
+  ...tool,
+  href:
+    tool.slug === "pdf-compressor"
+      ? `/${lang}/`
+      : `https://nanokito.com/${lang}/tools/${tool.slug}`,
+}));
 ---
 
 <div
@@ -54,7 +61,7 @@ const searchableTools = tools;
       {
         searchableTools.map((tool) => (
           <a
-            href={`/${lang}/tools/${tool.slug}`}
+            href={tool.href}
             class="search-item flex items-center px-3 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800/50 cursor-pointer group transition-colors"
             data-title={tool.title[lang]}
             data-desc={tool.description[lang]}

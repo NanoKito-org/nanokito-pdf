@@ -2,18 +2,8 @@
 import Layout from "../../layouts/Layout.astro";
 import { languages } from "../../i18n/ui";
 import { useTranslations } from "../../i18n/utils";
-import {
-    Code,
-    Image,
-    FileText,
-    File,
-    ArrowRight,
-    Shield,
-    Zap,
-    CheckCircle,
-} from "lucide-react";
-import ToolCard from "../../components/ToolCard.astro";
-import Hero from "../../components/Hero.astro";
+import { Shield, Zap, CheckCircle } from "lucide-react";
+import PdfCompressor from "../../components/tools/PdfCompressor.astro";
 
 export function getStaticPaths() {
     return [{ params: { lang: "en" } }, { params: { lang: "fr" } }];
@@ -22,48 +12,115 @@ export function getStaticPaths() {
 const { lang } = Astro.params;
 const t = useTranslations(lang as keyof typeof languages);
 
-const featuredTools = [
-    {
-        title: "Base64 Converter",
-        description: "Encode and decode data to Base64 format instantly.",
-        category: t("categories.dev"),
-        href: `/${lang}/tools/base64`,
-        icon: Code,
+// PDF Compressor labels
+const labels = {
+    en: {
+        uploadTitle: "Compress PDF Files",
+        uploadDesc: "Drag & drop PDF files here, or click to select",
+        dropTitle: "Drop to Add",
+        processing: "Processing...",
+        download: "Download",
+        downloadAll: "Download All ZIP",
+        settings: "Compression Settings",
+        quality: "Compression Level",
+        grayscale: "Grayscale (B&W)",
+        grayscaleDesc: "Converts to black & white for maximum reduction",
     },
-    {
-        title: "Image Compressor",
-        description: "Reduce image size without losing quality locally.",
-        category: t("categories.image"),
-        href: `/${lang}/tools/compressor`,
-        icon: Image,
+    fr: {
+        uploadTitle: "Compresser des fichiers PDF",
+        uploadDesc:
+            "Glissez-déposez vos fichiers PDF ici, ou cliquez pour sélectionner",
+        dropTitle: "Déposer pour ajouter",
+        processing: "Traitement...",
+        download: "Télécharger",
+        downloadAll: "Tout télécharger (ZIP)",
+        settings: "Paramètres de compression",
+        quality: "Niveau de compression",
+        grayscale: "Niveaux de gris (N&B)",
+        grayscaleDesc: "Convertit en noir et blanc pour une réduction maximale",
     },
-    {
-        title: "Word Counter",
-        description: "Count words, characters, and sentences in real-time.",
-        category: t("categories.text"),
-        href: `/${lang}/tools/word-count`,
-        icon: FileText,
+};
+
+const currentLabels = labels[lang as "en" | "fr"];
+
+const seo = {
+    en: {
+        h2: "Private & Secure PDF Compression",
+        p1: "Unlike other tools that upload your sensitive documents to a cloud server, <strong>NanoKito PDF Compressor</strong> works 100% in your browser. Your files never leave your device.",
+        p2: "We use a 'Visual Compression' technique (Rasterization) which converts document pages into highly optimized images. This is perfect for scanning archives, reducing file size for email, or sharing drafts where editable text is not required.",
     },
-    {
-        title: "PDF Compressor",
-        description:
-            "Compress PDF files locally by rasterizing pages to images.",
-        category: t("categories.pdf"),
-        href: `/${lang}/tools/pdf-compressor`,
-        icon: File,
+    fr: {
+        h2: "Compression PDF Privée et Sécurisée",
+        p1: "Contrairement aux autres outils qui envoient vos documents sensibles sur un serveur cloud, <strong>le Compresseur PDF NanoKito</strong> fonctionne à 100% dans votre navigateur. Vos fichiers ne quittent jamais votre appareil.",
+        p2: "Nous utilisons une technique de 'Compression Visuelle' (Rastérisation) qui convertit les pages du document en images hautement optimisées. C'est parfait pour scanner des archives, réduire la taille des fichiers pour l'email, ou partager des brouillons où le texte éditable n'est pas requis.",
     },
-];
+};
+
+const currentSeo = seo[lang as "en" | "fr"];
+
+const pageTitle = lang === "fr" ? "Compresseur PDF" : "PDF Compressor";
+const pageDescription =
+    lang === "fr"
+        ? "Compressez vos fichiers PDF localement en rastérisant les pages. Sans envoi au serveur."
+        : "Compress PDF files locally by rasterizing pages. No server uploads.";
 ---
 
-<Layout title={t("nav.home")}>
-    {/* Hero Section */}
-    <Hero />
+<Layout title={`${pageTitle} | NanoKito`} description={pageDescription}>
+    {/* Hero Section - PDF Compressor Focused */}
+    <section class="relative py-16 lg:py-24 overflow-hidden">
+        {/* Background */}
+        <div class="absolute inset-0 -z-10 bg-[var(--color-background)]">
+            <div
+                class="absolute top-0 -left-4 w-96 h-96 bg-amber-400/30 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"
+            >
+            </div>
+            <div
+                class="absolute top-0 -right-4 w-96 h-96 bg-orange-400/30 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"
+            >
+            </div>
+            <div
+                class="absolute -bottom-8 left-20 w-96 h-96 bg-yellow-400/30 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"
+            >
+            </div>
+            <div
+                class="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]"
+            >
+            </div>
+        </div>
+
+        <div class="container mx-auto px-4 max-w-5xl">
+            {/* Header */}
+            <div class="text-center mb-12">
+                <div
+                    class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--color-card)]/80 backdrop-blur-md border border-[var(--color-border)] shadow-sm mb-6"
+                >
+                    <Shield className="w-4 h-4 text-amber-500" />
+                    <span
+                        class="text-sm font-medium text-[var(--color-muted-foreground)]"
+                        >{t("hero.badge")}</span
+                    >
+                </div>
+                <h1
+                    class="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tighter text-[var(--color-foreground)] mb-4"
+                >
+                    {pageTitle}
+                </h1>
+                <p
+                    class="text-lg text-[var(--color-muted-foreground)] max-w-2xl mx-auto"
+                >
+                    {pageDescription}
+                </p>
+            </div>
+
+            {/* PDF Compressor Tool */}
+            <PdfCompressor labels={currentLabels} />
+        </div>
+    </section>
 
     {/* Trust / Features Section */}
     <section
         class="py-24 bg-[var(--color-card)] border-t border-[var(--color-border)] relative overflow-hidden"
     >
-        {/* Background from Layout */}
         <div class="container mx-auto px-4 max-w-5xl relative z-10">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {/* Feature 1: Private */}
@@ -156,44 +213,48 @@ const featuredTools = [
         </div>
     </section>
 
-    {/* Featured Tools */}
-    <section
-        class="py-20 bg-[var(--color-muted)]/30 border-t border-[var(--color-border)]"
-    >
-        <div class="container mx-auto px-4 max-w-6xl">
-            <div class="flex items-center justify-between mb-12">
+    {/* SEO Content Section */}
+    <section class="py-16 bg-[var(--color-background)]">
+        <div class="container mx-auto px-4 max-w-3xl">
+            <div class="prose prose-lg dark:prose-invert mx-auto">
                 <h2
-                    class="text-2xl font-bold text-[var(--color-foreground)] flex items-center gap-2"
+                    class="text-2xl font-bold text-[var(--color-foreground)] mb-6"
                 >
-                    <span
-                        class="w-1 h-8 bg-[var(--color-primary)] rounded-full inline-block"
-                    ></span>
-                    Featured Tools
+                    {currentSeo.h2}
                 </h2>
-                <a
-                    href={`/${lang}/tools`}
-                    class="text-[var(--color-primary)] font-medium hover:underline flex items-center gap-1 group"
-                >
-                    View all <ArrowRight
-                        className="w-4 h-4 group-hover:translate-x-1 transition-transform"
-                    />
-                </a>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {
-                    featuredTools.map((tool) => (
-                        <ToolCard
-                            title={tool.title}
-                            description={tool.description}
-                            category={tool.category}
-                            href={tool.href}
-                        >
-                            <tool.icon slot="icon" className="w-6 h-6" />
-                        </ToolCard>
-                    ))
-                }
+                <p
+                    class="text-[var(--color-muted-foreground)] mb-4"
+                    set:html={currentSeo.p1}
+                />
+                <p
+                    class="text-[var(--color-muted-foreground)]"
+                    set:html={currentSeo.p2}
+                />
             </div>
         </div>
     </section>
 </Layout>
+
+<style>
+    .animation-delay-2000 {
+        animation-delay: 2s;
+    }
+    .animation-delay-4000 {
+        animation-delay: 4s;
+    }
+    @keyframes blob {
+        0%,
+        100% {
+            transform: translate(0px, 0px) scale(1);
+        }
+        33% {
+            transform: translate(30px, -50px) scale(1.1);
+        }
+        66% {
+            transform: translate(-20px, 20px) scale(0.9);
+        }
+    }
+    .animate-blob {
+        animation: blob 7s infinite;
+    }
+</style>
