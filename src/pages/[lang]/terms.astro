@@ -1,0 +1,210 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getLangFromUrl, useTranslations } from "../../i18n/utils";
+import { Scroll, Shield, Scale, FileText, AlertTriangle } from "lucide-react";
+
+export function getStaticPaths() {
+  return [{ params: { lang: "en" } }, { params: { lang: "fr" } }];
+}
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const lastUpdated = "December 17, 2025";
+const email = "hello@nanokito.com";
+const country = "France";
+
+const sections = [
+  {
+    id: "open-source",
+    title: "1. Open Source License (AGPL)",
+    icon: Scale,
+    content: `
+      Unlike the main NanoKito website, this specific PDF Compression Tool is <strong>Open Source software</strong>.
+      <ul class="list-disc pl-5 mt-2 space-y-1">
+        <li><strong>The Engine:</strong> This tool operates using the Ghostscript engine.</li>
+        <li><strong>The License:</strong> The software powering this specific subdomain (<code>pdf.nanokito.com</code>) is distributed under the <strong>GNU Affero General Public License v3 (AGPL)</strong>.</li>
+        <li><strong>Your Rights:</strong> In accordance with the AGPL, you have the right to access, modify, and redistribute the source code of this tool.</li>
+        <li><strong>Source Code:</strong> You can download the source code for this tool here: <a href="https://github.com/NanoKito-org/nanokito-pdf" class="text-blue-500 hover:text-blue-600" target="_blank">GitHub Repository</a>.</li>
+      </ul>
+    `,
+  },
+  {
+    id: "branding",
+    title: "2. Branding & Trademarks",
+    icon: Shield,
+    content: `
+      While the <em>software code</em> is open source, the <strong>NanoKito brand</strong>, logo, design assets, and the domain name <code>nanokito.com</code> remain the exclusive intellectual property of NanoKito.
+      <ul class="list-disc pl-5 mt-2 space-y-1">
+        <li>You may use the code.</li>
+        <li>You may <strong>not</strong> use our brand name or logo to represent your own fork of the project without permission.</li>
+      </ul>
+    `,
+  },
+  {
+    id: "warranty",
+    title: '3. No Warranty ("As Is")',
+    icon: AlertTriangle,
+    content: `
+      This program is distributed in the hope that it will be useful, but <strong>WITHOUT ANY WARRANTY</strong>; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+    `,
+  },
+  {
+    id: "liability",
+    title: "4. Limitation of Liability",
+    icon: FileText,
+    content: `
+      By using this tool, you acknowledge that the processing happens locally on your device. NanoKito is not responsible for any data loss or corruption that may occur during the compression process.
+    `,
+  },
+];
+---
+
+<Layout
+  title="Terms of Service & Open Source Notice | NanoKito"
+  description="Terms of Service and Open Source License (AGPL) for the PDF Compressor."
+>
+  <div class="bg-[var(--color-background)] min-h-screen">
+    {/* Header Section */}
+    <div
+      class="bg-[var(--color-card)]/30 border-b border-[var(--color-border)]"
+    >
+      <div class="container mx-auto px-4 py-16 max-w-6xl text-center">
+        <div
+          class="inline-flex items-center justify-center p-3 mb-6 bg-[var(--color-primary)]/10 text-[var(--color-primary)] rounded-2xl"
+        >
+          <Scroll className="w-8 h-8" />
+        </div>
+        <h1
+          class="text-3xl md:text-5xl font-bold mb-6 text-[var(--color-foreground)]"
+        >
+          Terms of Service & Open Source Notice
+        </h1>
+        <p
+          class="text-[var(--color-muted-foreground)] text-lg max-w-2xl mx-auto"
+        >
+          Please read these terms carefully before using our service. By
+          utilizing NanoKito, you agree to these conditions ensuring a safe and
+          transparent experience for everyone.
+        </p>
+        <div
+          class="mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--color-border)] bg-[var(--color-card)] text-sm text-[var(--color-muted-foreground)]"
+        >
+          <span>Last Updated:</span>
+          <span class="font-semibold text-[var(--color-foreground)]"
+            >{lastUpdated}</span
+          >
+        </div>
+      </div>
+    </div>
+
+    <div class="container mx-auto px-4 py-12 max-w-6xl">
+      <div class="flex flex-col md:flex-row gap-8 lg:gap-12">
+        {/* Sidebar Navigation - Sticky */}
+        <div class="w-full md:w-60 lg:w-72 flex-shrink-0">
+          <div class="sticky top-24 space-y-1">
+            <h3 class="font-semibold text-[var(--color-foreground)] mb-4 px-3">
+              Table of Contents
+            </h3>
+            <nav class="space-y-1" id="toc-nav">
+              {
+                sections.map((section) => (
+                  <a
+                    href={`#${section.id}`}
+                    class="block px-3 py-2 text-sm text-[var(--color-muted-foreground)] hover:text-[var(--color-primary)] hover:bg-[var(--color-primary)]/5 rounded-lg transition-colors border-l-2 border-transparent hover:border-[var(--color-primary)]"
+                    data-target={section.id}
+                  >
+                    {section.title.split(". ")[1] || section.title}
+                  </a>
+                ))
+              }
+            </nav>
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div class="flex-1 max-w-3xl">
+          <div
+            class="prose prose-lg dark:prose-invert max-w-none prose-headings:text-[var(--color-foreground)] prose-a:text-[var(--color-primary)] hover:prose-a:text-[var(--color-primary)]/80 prose-li:text-[var(--color-muted-foreground)] prose-strong:text-[var(--color-foreground)]"
+          >
+            <div
+              class="intro mb-12 p-6 bg-[var(--color-card)] border border-[var(--color-border)] rounded-2xl"
+            >
+              <p class="m-0 text-[var(--color-muted-foreground)]">
+                Welcome to NanoKito ("we," "us," or "our"). By accessing or
+                using our website located at <a href="https://nanokito.com"
+                  >https://nanokito.com</a
+                > (the "Service"), you agree to be bound by these Terms of Service
+                ("Terms"). If you do not agree to these Terms, please do not use our
+                Service.
+              </p>
+            </div>
+
+            <div class="space-y-12">
+              {
+                sections.map((section) => (
+                  <section id={section.id} class="scroll-mt-28 group">
+                    <div class="flex items-center gap-3 mb-4">
+                      <div class="p-2 bg-[var(--color-muted)] rounded-lg text-[var(--color-foreground)] group-hover:text-[var(--color-primary)] transition-colors">
+                        <section.icon className="w-5 h-5" />
+                      </div>
+                      <h2 class="text-2xl font-bold !mb-0">{section.title}</h2>
+                    </div>
+                    <div
+                      class="text-[var(--color-muted-foreground)] pl-[3.25rem]"
+                      set:html={section.content}
+                    />
+                  </section>
+                ))
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  // Simple Intersection Observer for TOC highlighting
+  const observerOptions = {
+    root: null,
+    rootMargin: "-20% 0px -50% 0px",
+    threshold: 0,
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        document.querySelectorAll("#toc-nav a").forEach((link) => {
+          link.classList.remove(
+            "bg-[var(--color-primary)]/10",
+            "text-[var(--color-primary)]",
+            "border-[var(--color-primary)]",
+          );
+          link.classList.add(
+            "text-[var(--color-muted-foreground)]",
+            "border-transparent",
+          );
+
+          if (link.getAttribute("href") === `#${id}`) {
+            link.classList.add(
+              "bg-[var(--color-primary)]/10",
+              "text-[var(--color-primary)]",
+              "border-[var(--color-primary)]",
+            );
+            link.classList.remove(
+              "text-[var(--color-muted-foreground)]",
+              "border-transparent",
+            );
+          }
+        });
+      }
+    });
+  }, observerOptions);
+
+  document.querySelectorAll("section[id]").forEach((section) => {
+    observer.observe(section);
+  });
+</script>
