@@ -1,6 +1,8 @@
 ---
 import { getLangFromUrl, useTranslations } from "../i18n/utils";
 
+import { Github } from "lucide-react";
+
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const year = new Date().getFullYear();
@@ -100,6 +102,17 @@ const year = new Date().getFullYear();
                             class="text-[var(--color-muted-foreground)] hover:text-[var(--color-primary)] transition-colors text-sm"
                             >{t("footer.about")}</a
                         >
+                    </li>
+                    <li>
+                        <a
+                            href="https://github.com/NanoKito-org/nanokito-pdf"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="text-[var(--color-muted-foreground)] hover:text-[var(--color-primary)] transition-colors text-sm flex items-center gap-2"
+                        >
+                            <Github className="w-4 h-4" />
+                            GitHub
+                        </a>
                     </li>
                     <li class="pt-2">
                         <a

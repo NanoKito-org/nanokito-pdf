@@ -2,7 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import { languages } from "../../i18n/ui";
 import { useTranslations } from "../../i18n/utils";
-import { Shield, Zap, CheckCircle } from "lucide-react";
+import { Shield, Zap, CheckCircle, TrendingDown } from "lucide-react";
 import PdfCompressor from "../../components/tools/PdfCompressor.astro";
 
 export function getStaticPaths() {
@@ -79,6 +79,49 @@ const pageDescription =
     lang === "fr"
         ? "Compressez vos fichiers PDF localement en rastérisant les pages. Sans envoi au serveur."
         : "Compress PDF files locally by rasterizing pages. No server uploads.";
+
+const features = {
+    en: [
+        {
+            icon: Zap,
+            title: "Zero Latency",
+            desc: "No uploading or downloading wait times. The compression happens instantly.",
+        },
+        {
+            icon: Shield,
+            title: "Private by Design",
+            desc: "Traditional tools upload your bank statements and contracts to a cloud server. We don't. The engine runs entirely on your computer.",
+        },
+        {
+            icon: TrendingDown,
+            title: "High Efficiency",
+            desc: "Powered by the industrial-strength Ghostscript engine for maximum file size reduction.",
+        },
+    ],
+    fr: [
+        {
+            icon: Zap,
+            title: "Zéro Latence",
+            desc: "Pas de temps d'attente. La compression est instantanée.",
+        },
+        {
+            icon: Shield,
+            title: "Privé par Design",
+            desc: "Tout se passe sur votre ordinateur. Aucun envoi sur le cloud.",
+        },
+        {
+            icon: TrendingDown,
+            title: "Haute Efficacité",
+            desc: "Propulsé par le moteur Ghostscript pour une réduction maximale.",
+        },
+    ],
+};
+
+const currentFeatures = features[lang as "en" | "fr"];
+const ghostscriptText =
+    lang === "fr"
+        ? "Cet outil utilise un portage WebAssembly de Ghostscript, la référence en traitement PDF, pour garantir la lisibilité de vos documents même à forte compression."
+        : "This tool utilizes a WebAssembly port of Ghostscript, the gold standard in PDF processing, to ensure your documents remain readable even at high compression rates.";
 ---
 
 <Layout title={`${pageTitle} | NanoKito`} description={pageDescription}>
@@ -130,6 +173,32 @@ const pageDescription =
 
             {/* PDF Compressor Tool */}
             <PdfCompressor labels={currentLabels} />
+
+            {/* How it Works Section */}
+            <div class="mt-24 grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
+                {
+                    currentFeatures.map((feature) => (
+                        <div class="bg-[var(--color-card)]/50 backdrop-blur-sm border border-[var(--color-border)] rounded-2xl p-6 hover:bg-[var(--color-card)]/80 transition-all duration-300">
+                            <feature.icon className="w-8 h-8 text-amber-500 mb-4" />
+                            <h3 class="text-xl font-bold text-[var(--color-foreground)] mb-2">
+                                {feature.title}
+                            </h3>
+                            <p class="text-[var(--color-muted-foreground)] leading-relaxed">
+                                {feature.desc}
+                            </p>
+                        </div>
+                    ))
+                }
+            </div>
+
+            {/* Ghostscript Mention */}
+            <div class="mt-16 text-center max-w-3xl mx-auto">
+                <p
+                    class="text-lg text-[var(--color-muted-foreground)] leading-relaxed bg-[var(--color-card)]/30 backdrop-blur-sm p-6 rounded-2xl border border-[var(--color-border)] inline-block"
+                >
+                    {ghostscriptText}
+                </p>
+            </div>
         </div>
     </section>
 </Layout>
