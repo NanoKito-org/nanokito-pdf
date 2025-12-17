@@ -9,6 +9,10 @@ import {
   CheckCircle,
   Loader2,
   Minimize2,
+  Sparkles,
+  CloudUpload,
+  FileDown,
+  Archive,
 } from "lucide-react";
 
 interface Props {
@@ -63,221 +67,408 @@ const {
 ---
 
 <div
-  class="w-full max-w-4xl mx-auto space-y-8"
+  class="w-full max-w-5xl mx-auto"
   id="pdf-compressor-app"
   data-labels={JSON.stringify(labels)}
 >
-  <!-- Warning Banner -->
-
-  <div
-    class="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade-up [animation-delay:100ms]"
-  >
-    <!-- Left Column: Upload -->
-    <div class="lg:col-span-1 space-y-6">
-      <!-- Upload Zone -->
+  <!-- Main Container with Glass Effect -->
+  <div class="pdf-compressor-container relative">
+    <!-- Animated Background Gradient -->
+    <div class="absolute inset-0 -z-10 overflow-hidden rounded-3xl">
       <div
-        id="pdf-drop-zone"
-        class="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl bg-slate-50/50 dark:bg-slate-900/50 p-8 flex flex-col items-center justify-center text-center cursor-pointer hover:border-amber-400 dark:hover:border-amber-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-300 group sticky top-6"
+        class="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-orange-500/5 to-red-500/5 dark:from-amber-500/10 dark:via-orange-500/10 dark:to-red-500/10"
       >
-        <div
-          class="p-4 rounded-full bg-white dark:bg-slate-800 group-hover:bg-amber-50 dark:group-hover:bg-amber-900/20 group-hover:scale-110 transition-all duration-300 shadow-sm mb-3"
-        >
-          <Upload
-            className="w-8 h-8 text-slate-400 group-hover:text-amber-500"
-          />
-        </div>
-        <input
-          type="file"
-          id="pdf-input"
-          accept="application/pdf"
-          multiple
-          class="hidden"
-        />
-        <h3
-          class="font-bold text-slate-700 dark:text-slate-200 mb-1 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors"
-        >
-          {labels.uploadTitle}
-        </h3>
-        <p class="text-xs text-slate-500 dark:text-slate-400">
-          {labels.uploadDesc}
-        </p>
       </div>
+      <div class="gradient-orb gradient-orb-1"></div>
+      <div class="gradient-orb gradient-orb-2"></div>
+      <div class="gradient-orb gradient-orb-3"></div>
     </div>
 
-    <!-- Right Column: List -->
-    <div class="lg:col-span-2">
-      <div id="file-list" class="space-y-4 min-h-[400px]">
-        <!-- Empty State -->
-        <div
-          id="empty-state"
-          class="h-full flex flex-col items-center justify-center text-center p-10 border-2 border-dashed border-slate-100 dark:border-slate-800 rounded-2xl"
-        >
-          <Minimize2
-            className="w-16 h-16 text-slate-200 dark:text-slate-800 mb-4"
-          />
-          <p class="text-slate-400 font-medium">No files in queue</p>
-        </div>
+    <!-- Glass Panel -->
+    <div
+      class="relative backdrop-blur-xl bg-white/60 dark:bg-slate-900/60 rounded-3xl border border-white/20 dark:border-slate-700/50 shadow-2xl shadow-amber-500/5 dark:shadow-amber-500/10 p-3 sm:p-6 md:p-8 overflow-hidden"
+    >
+      <!-- Decorative Corner Elements -->
+      <div
+        class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-amber-400/20 to-transparent rounded-bl-full pointer-events-none"
+      >
+      </div>
+      <div
+        class="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-orange-400/20 to-transparent rounded-tr-full pointer-events-none"
+      >
       </div>
 
-      <!-- Action Bar (Appears when files exist) -->
-      <div
-        id="action-bar"
-        class="hidden mt-6 pt-6 border-t border-slate-200 dark:border-slate-800 flex justify-end"
-      >
-        <button
-          id="download-all-btn"
-          class="flex items-center gap-2 px-6 py-3 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <Download className="w-4 h-4" />
-          {labels.downloadAll}
-        </button>
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+        <!-- Left Column: Upload Zone -->
+        <div class="lg:col-span-2">
+          <!-- Upload Zone with Premium Design -->
+          <div
+            id="pdf-drop-zone"
+            class="upload-zone relative group cursor-pointer h-full min-h-[320px] rounded-2xl transition-all duration-500"
+          >
+            <!-- Animated Border -->
+            <div
+              class="absolute inset-0 rounded-2xl bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 p-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+            >
+              <div
+                class="absolute inset-[2px] rounded-[14px] bg-white dark:bg-slate-900"
+              >
+              </div>
+            </div>
+
+            <!-- Default Border -->
+            <div
+              class="absolute inset-0 rounded-2xl border-2 border-dashed border-slate-300/80 dark:border-slate-700/80 group-hover:border-transparent transition-all duration-500"
+            >
+            </div>
+
+            <!-- Content Container -->
+            <div
+              class="relative h-full flex flex-col items-center justify-center text-center p-4 sm:p-8 z-10"
+            >
+              <!-- Floating Particles -->
+              <div
+                class="particles-container absolute inset-0 overflow-hidden rounded-2xl pointer-events-none"
+              >
+                <div class="particle particle-1"></div>
+                <div class="particle particle-2"></div>
+                <div class="particle particle-3"></div>
+                <div class="particle particle-4"></div>
+                <div class="particle particle-5"></div>
+              </div>
+
+              <!-- Icon with Glow -->
+              <div class="relative mb-6">
+                <div
+                  class="absolute inset-0 bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl blur-xl opacity-0 group-hover:opacity-40 transition-opacity duration-500 scale-150"
+                >
+                </div>
+                <div
+                  class="relative p-5 rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/30 dark:to-orange-900/30 border border-amber-200/50 dark:border-amber-600/30 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg shadow-amber-500/10"
+                >
+                  <CloudUpload
+                    className="w-10 h-10 text-amber-600 dark:text-amber-400 group-hover:animate-bounce"
+                  />
+                </div>
+              </div>
+
+              <input
+                type="file"
+                id="pdf-input"
+                accept="application/pdf"
+                multiple
+                class="hidden"
+              />
+
+              <h3
+                class="text-xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 dark:from-white dark:to-slate-300 bg-clip-text text-transparent mb-2 group-hover:from-amber-600 group-hover:to-orange-600 dark:group-hover:from-amber-400 dark:group-hover:to-orange-400 transition-all duration-500"
+              >
+                {labels.uploadTitle}
+              </h3>
+
+              <p class="text-sm text-slate-500 dark:text-slate-400 max-w-xs">
+                {labels.uploadDesc}
+              </p>
+
+              <!-- Supported Format Badge -->
+              <div
+                class="mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200/50 dark:border-slate-700/50"
+              >
+                <FileText className="w-4 h-4 text-red-500" />
+                <span
+                  class="text-xs font-medium text-slate-600 dark:text-slate-300"
+                  >PDF Files Only</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: File List -->
+        <div class="lg:col-span-3">
+          <div id="file-list" class="space-y-4 min-h-[320px]">
+            <!-- Empty State with Premium Design -->
+            <div
+              id="empty-state"
+              class="h-full min-h-[320px] flex flex-col items-center justify-center text-center p-8 rounded-2xl bg-gradient-to-br from-slate-50/50 to-slate-100/50 dark:from-slate-800/30 dark:to-slate-700/30 border border-slate-200/50 dark:border-slate-700/50"
+            >
+              <div class="relative mb-6">
+                <div
+                  class="absolute inset-0 bg-slate-300 dark:bg-slate-600 rounded-full blur-2xl opacity-20 scale-150"
+                >
+                </div>
+                <div
+                  class="relative p-6 rounded-2xl bg-white/80 dark:bg-slate-800/80 border border-slate-200/50 dark:border-slate-700/50 shadow-lg"
+                >
+                  <Minimize2
+                    className="w-12 h-12 text-slate-300 dark:text-slate-600"
+                  />
+                </div>
+              </div>
+              <p
+                class="text-lg font-semibold text-slate-400 dark:text-slate-500 mb-2"
+              >
+                No files in queue
+              </p>
+              <p class="text-sm text-slate-400/70 dark:text-slate-500/70">
+                Upload PDF files to start compressing
+              </p>
+            </div>
+          </div>
+
+          <!-- Action Bar (Appears when files exist) -->
+          <div
+            id="action-bar"
+            class="hidden mt-6 pt-6 border-t border-slate-200/50 dark:border-slate-700/50"
+          >
+            <div class="flex items-center justify-between gap-4">
+              <div
+                class="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400"
+              >
+                <Archive className="w-4 h-4" />
+                <span>Multiple files ready</span>
+              </div>
+              <button
+                id="download-all-btn"
+                class="relative group/btn inline-flex items-center gap-3 px-6 py-3 rounded-xl font-bold text-white overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-amber-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+              >
+                <!-- Button Gradient Background -->
+                <div
+                  class="absolute inset-0 bg-gradient-to-r from-amber-500 via-orange-500 to-red-500"
+                >
+                </div>
+                <div
+                  class="absolute inset-0 bg-gradient-to-r from-amber-600 via-orange-600 to-red-600 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"
+                >
+                </div>
+
+                <!-- Button Content -->
+                <span class="relative flex items-center gap-2">
+                  <FileDown className="w-5 h-5" />
+                  {labels.downloadAll}
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
+<!-- Premium File Item Template -->
 <template id="file-item-template">
   <div
-    class="file-item relative bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 shadow-sm hover:shadow-md transition-all cursor-pointer group/card"
+    class="file-item group/card relative rounded-xl overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-xl animate-slide-in"
   >
-    <div class="flex items-start gap-4 pointer-events-none">
-      <!-- Icon -->
-      <div
-        class="p-3 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400"
-      >
-        <FileText className="w-6 h-6" />
-      </div>
+    <!-- Card Background with Gradient Border on Hover -->
+    <div
+      class="absolute inset-0 bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 rounded-xl"
+    >
+    </div>
 
-      <!-- Content -->
-      <div class="flex-1 min-w-0 pointer-events-auto">
-        <div class="flex items-start justify-between mb-2">
-          <div>
-            <h4
-              class="font-bold text-slate-700 dark:text-slate-200 truncate pr-4 text-sm filename"
-            >
-              filename.pdf
-            </h4>
-            <div
-              class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mt-0.5"
-            >
-              <span class="original-size">2.4 MB</span>
-              <span class="arrow hidden">→</span>
-              <span
-                class="new-size hidden font-mono text-slate-900 dark:text-slate-200 font-bold"
-                >1.1 MB</span
-              >
-            </div>
+    <!-- Card Inner -->
+    <div
+      class="relative m-[1px] bg-white dark:bg-slate-900 rounded-[11px] p-3 sm:p-5"
+    >
+      <div class="flex items-start gap-3 sm:gap-4">
+        <!-- PDF Icon with Glow -->
+        <div class="relative flex-shrink-0">
+          <div
+            class="absolute inset-0 bg-red-500 rounded-xl blur-lg opacity-20"
+          >
           </div>
-          <div class="flex items-center gap-1">
-            <button
-              class="text-slate-400 hover:text-amber-500 transition-colors settings-btn p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
-              title="Compression Settings"
-            >
-              <Settings className="w-4 h-4" />
-            </button>
-            <button
-              class="text-slate-400 hover:text-red-500 transition-colors remove-btn p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
-              title="Remove File"
-            >
-              <Trash2 className="w-4 h-4" />
-            </button>
+          <div
+            class="relative p-2 sm:p-3 rounded-xl bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900/30 dark:to-red-800/30 border border-red-200/50 dark:border-red-700/50"
+          >
+            <FileText
+              className="w-5 h-5 sm:w-6 sm:h-6 text-red-500 dark:text-red-400"
+            />
           </div>
         </div>
 
-        <!-- Settings Panel (Visible by default) -->
-        <div
-          class="settings-panel mb-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-800"
-          onclick="event.stopPropagation()"
-        >
-          <div class="flex flex-col gap-3">
-            <div class="space-y-2">
-              <label
-                class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"
-                >Quality Profile</label
+        <!-- Content -->
+        <div class="flex-1 min-w-0">
+          <!-- Header Row -->
+          <div
+            class="flex items-start justify-between gap-2 sm:gap-4 mb-2 sm:mb-3"
+          >
+            <div class="min-w-0 flex-1">
+              <h4
+                class="font-bold text-slate-800 dark:text-slate-100 truncate text-sm sm:text-base filename"
               >
-              <div class="flex gap-2">
-                <label class="flex-1 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="quality"
-                    value="screen"
-                    class="peer sr-only"
-                  />
-                  <div
-                    class="text-center py-1.5 px-2 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-600 dark:text-slate-300 peer-checked:bg-amber-500 peer-checked:text-white peer-checked:border-amber-500 transition-all"
+                filename.pdf
+              </h4>
+              <div
+                class="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm mt-0.5 sm:mt-1"
+              >
+                <span
+                  class="original-size text-slate-500 dark:text-slate-400 font-mono"
+                  >2.4 MB</span
+                >
+                <span class="arrow hidden text-amber-500">
+                  <svg
+                    class="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
                   >
-                    Screen
-                  </div>
-                </label>
-                <label class="flex-1 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="quality"
-                    value="ebook"
-                    class="peer sr-only"
-                    checked
-                  />
-                  <div
-                    class="text-center py-1.5 px-2 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-600 dark:text-slate-300 peer-checked:bg-amber-500 peer-checked:text-white peer-checked:border-amber-500 transition-all"
-                  >
-                    eBook
-                  </div>
-                </label>
-                <label class="flex-1 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="quality"
-                    value="printer"
-                    class="peer sr-only"
-                  />
-                  <div
-                    class="text-center py-1.5 px-2 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-600 dark:text-slate-300 peer-checked:bg-amber-500 peer-checked:text-white peer-checked:border-amber-500 transition-all"
-                  >
-                    Printer
-                  </div>
-                </label>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                  </svg>
+                </span>
+                <span
+                  class="new-size hidden font-mono font-bold text-emerald-600 dark:text-emerald-400"
+                  >1.1 MB</span
+                >
               </div>
-              <p class="text-[10px] text-slate-400 text-center quality-desc">
-                {labels.qualityEbook}
-              </p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center gap-1">
+              <button
+                class="settings-btn p-2 rounded-lg text-slate-400 hover:text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-all duration-200"
+                title="Compression Settings"
+              >
+                <Settings className="w-4 h-4" />
+              </button>
+              <button
+                class="remove-btn p-2 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-200"
+                title="Remove File"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
             </div>
           </div>
-        </div>
 
-        <!-- Progress Bar -->
-        <div class="progress-section mt-3">
-          <div class="flex justify-between text-xs mb-1.5">
-            <span
-              class="status-text font-medium text-amber-600 dark:text-amber-400"
-              >Waiting...</span
-            >
-            <span class="percentage text-slate-500"></span>
-          </div>
+          <!-- Settings Panel -->
           <div
-            class="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden"
+            class="settings-panel mb-3 sm:mb-4 p-3 sm:p-4 rounded-xl bg-gradient-to-br from-slate-50 to-slate-100/50 dark:from-slate-800/50 dark:to-slate-700/30 border border-slate-200/50 dark:border-slate-700/50"
+            onclick="event.stopPropagation()"
+          >
+            <label
+              class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3 block"
+            >
+              Quality Profile
+            </label>
+            <div
+              class="grid grid-cols-1 min-[380px]:grid-cols-3 gap-1.5 sm:gap-2"
+            >
+              <label class="quality-option cursor-pointer">
+                <input
+                  type="radio"
+                  name="quality"
+                  value="screen"
+                  class="peer sr-only"
+                />
+                <div
+                  class="quality-btn text-center py-2 sm:py-2.5 px-1.5 sm:px-3 rounded-lg border-2 border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-300 peer-checked:border-amber-500 peer-checked:bg-amber-500 peer-checked:text-white transition-all duration-200 hover:border-amber-400"
+                >
+                  Screen
+                </div>
+              </label>
+              <label class="quality-option cursor-pointer">
+                <input
+                  type="radio"
+                  name="quality"
+                  value="ebook"
+                  class="peer sr-only"
+                  checked
+                />
+                <div
+                  class="quality-btn text-center py-2 sm:py-2.5 px-1.5 sm:px-3 rounded-lg border-2 border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-300 peer-checked:border-amber-500 peer-checked:bg-amber-500 peer-checked:text-white transition-all duration-200 hover:border-amber-400"
+                >
+                  eBook
+                </div>
+              </label>
+              <label class="quality-option cursor-pointer">
+                <input
+                  type="radio"
+                  name="quality"
+                  value="printer"
+                  class="peer sr-only"
+                />
+                <div
+                  class="quality-btn text-center py-2 sm:py-2.5 px-1.5 sm:px-3 rounded-lg border-2 border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-300 peer-checked:border-amber-500 peer-checked:bg-amber-500 peer-checked:text-white transition-all duration-200 hover:border-amber-400"
+                >
+                  Printer
+                </div>
+              </label>
+            </div>
+            <p class="text-xs text-slate-400 text-center mt-3 quality-desc">
+              {labels.qualityEbook}
+            </p>
+          </div>
+
+          <!-- Progress Section -->
+          <div class="progress-section">
+            <div class="flex justify-between items-center text-sm mb-2">
+              <span
+                class="status-text font-medium text-amber-600 dark:text-amber-400 flex items-center gap-2"
+              >
+                <span
+                  class="status-indicator w-2 h-2 rounded-full bg-amber-500 animate-pulse"
+                ></span>
+                Waiting...
+              </span>
+              <span class="percentage text-slate-500 font-mono font-bold"
+              ></span>
+            </div>
+            <div
+              class="relative h-3 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden"
+            >
+              <!-- Progress Bar with Gradient -->
+              <div
+                class="progress-bar absolute inset-y-0 left-0 bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 transition-all duration-300 w-0 rounded-full"
+              >
+                <div
+                  class="absolute inset-0 bg-gradient-to-r from-white/30 to-transparent"
+                >
+                </div>
+              </div>
+              <!-- Shimmer Effect -->
+              <div
+                class="progress-shimmer absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full"
+              >
+              </div>
+            </div>
+          </div>
+
+          <!-- Success Actions -->
+          <div
+            class="success-actions hidden mt-3 sm:mt-4"
+            onclick="event.stopPropagation()"
           >
             <div
-              class="progress-bar h-full bg-amber-500 transition-all duration-300 w-0"
+              class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3"
             >
+              <button
+                class="download-btn flex-1 relative group/dl inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-bold text-white overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-emerald-500/25"
+              >
+                <!-- Button Gradient Background -->
+                <div
+                  class="absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-500"
+                >
+                </div>
+                <div
+                  class="absolute inset-0 bg-gradient-to-r from-emerald-600 to-teal-600 opacity-0 group-hover/dl:opacity-100 transition-opacity"
+                >
+                </div>
+                <span class="relative flex items-center gap-2">
+                  <Download className="w-4 h-4" />
+                  {labels.download}
+                </span>
+              </button>
+              <div
+                class="savings-badge justify-center px-4 py-3 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/30 dark:to-teal-900/30 border border-emerald-200/50 dark:border-emerald-700/50 text-emerald-600 dark:text-emerald-400 font-bold text-sm flex items-center gap-2"
+              >
+                <Sparkles className="w-4 h-4" />
+                <span>-45%</span>
+              </div>
             </div>
-          </div>
-        </div>
-
-        <!-- Success Actions -->
-        <div
-          class="success-actions hidden mt-3 flex items-center gap-3"
-          onclick="event.stopPropagation()"
-        >
-          <button
-            class="download-btn flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 rounded-lg text-xs font-bold hover:bg-amber-200 dark:hover:bg-amber-900/50 transition-colors"
-          >
-            <Download className="w-3.5 h-3.5" />
-            {labels.download}
-          </button>
-          <div
-            class="px-3 py-2 rounded-lg bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 text-xs font-bold savings-badge"
-          >
-            -45%
           </div>
         </div>
       </div>
@@ -285,9 +476,162 @@ const {
   </div>
 </template>
 
-<div class="text-center mt-8 text-[10px] text-slate-400">
-  {labels.footer}
+<!-- Footer -->
+<div class="text-center mt-8">
+  <p
+    class="text-xs text-slate-400 dark:text-slate-500 flex items-center justify-center gap-2"
+  >
+    <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+    {labels.footer}
+  </p>
 </div>
+
+<!-- Premium Styles -->
+<style>
+  /* Gradient Orbs Animation */
+  .gradient-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.4;
+    animation: float 10s ease-in-out infinite;
+  }
+
+  .gradient-orb-1 {
+    width: 200px;
+    height: 200px;
+    background: linear-gradient(135deg, #f59e0b, #f97316);
+    top: -50px;
+    right: -50px;
+    animation-delay: 0s;
+  }
+
+  .gradient-orb-2 {
+    width: 150px;
+    height: 150px;
+    background: linear-gradient(135deg, #f97316, #ef4444);
+    bottom: -30px;
+    left: -30px;
+    animation-delay: -3s;
+  }
+
+  .gradient-orb-3 {
+    width: 180px;
+    height: 180px;
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation-delay: -5s;
+  }
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translate(0, 0) scale(1);
+    }
+    33% {
+      transform: translate(30px, -30px) scale(1.1);
+    }
+    66% {
+      transform: translate(-20px, 20px) scale(0.9);
+    }
+  }
+
+  /* Floating Particles */
+  .particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: linear-gradient(135deg, #f59e0b, #f97316);
+    border-radius: 50%;
+    opacity: 0;
+    animation: particle-float 4s ease-in-out infinite;
+  }
+
+  .particle-1 {
+    left: 20%;
+    animation-delay: 0s;
+  }
+  .particle-2 {
+    left: 40%;
+    animation-delay: 0.5s;
+  }
+  .particle-3 {
+    left: 60%;
+    animation-delay: 1s;
+  }
+  .particle-4 {
+    left: 80%;
+    animation-delay: 1.5s;
+  }
+  .particle-5 {
+    left: 50%;
+    animation-delay: 2s;
+  }
+
+  .upload-zone:hover .particle {
+    opacity: 0.6;
+  }
+
+  @keyframes particle-float {
+    0% {
+      transform: translateY(100px) scale(0);
+      opacity: 0;
+    }
+    50% {
+      opacity: 0.6;
+    }
+    100% {
+      transform: translateY(-100px) scale(1);
+      opacity: 0;
+    }
+  }
+
+  /* Slide In Animation */
+  @keyframes slide-in {
+    from {
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .animate-slide-in {
+    animation: slide-in 0.4s ease-out forwards;
+  }
+
+  /* Progress Shimmer */
+  .progress-bar.active + .progress-shimmer {
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  /* Drop Zone Active State */
+  .upload-zone.active {
+    border-color: transparent !important;
+  }
+
+  .upload-zone.active > div:first-child {
+    opacity: 1 !important;
+  }
+
+  /* Dark Mode Adjustments */
+  :global(.dark) .gradient-orb {
+    opacity: 0.25;
+  }
+</style>
 
 <script>
   import JSZip from "jszip";
@@ -341,16 +685,16 @@ const {
 
   dropZone?.addEventListener("dragover", (e) => {
     e.preventDefault();
-    dropZone.classList.add("border-amber-500", "bg-amber-50/50");
+    dropZone.classList.add("active");
   });
 
   dropZone?.addEventListener("dragleave", () => {
-    dropZone.classList.remove("border-amber-500", "bg-amber-50/50");
+    dropZone.classList.remove("active");
   });
 
   dropZone?.addEventListener("drop", (e) => {
     e.preventDefault();
-    dropZone.classList.remove("border-amber-500", "bg-amber-50/50");
+    dropZone.classList.remove("active");
     if (e.dataTransfer?.files) handleFiles(e.dataTransfer.files);
   });
 
@@ -656,7 +1000,7 @@ const {
     const progressBar = el.querySelector(".progress-bar") as HTMLElement;
 
     if (item.status === "processing") {
-      statusText.textContent = labels.statusOptimizing;
+      statusText.innerHTML = `<span class="status-indicator w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>${labels.statusOptimizing}`;
       progressBar.classList.add("animate-pulse");
       progressBar.style.width = "0%"; // Start at 0
     } else if (item.status === "done" && item.blob) {
@@ -676,38 +1020,58 @@ const {
       newSize.classList.remove("hidden");
       newSize.textContent = formatBytes(item.compressedSize!);
 
-      // Savings Badge
+      // Savings Badge - update the span inside
       const savedBytes = item.originalSize - item.compressedSize!;
       const savedPercent = Math.round((savedBytes / item.originalSize) * 100);
       const savingsBadge = el.querySelector(".savings-badge") as HTMLElement;
+      const savingsSpan = savingsBadge.querySelector("span");
 
       if (savedBytes > 0) {
-        savingsBadge.textContent = `-${savedPercent}%`;
-        savingsBadge.classList.add(
-          "bg-green-50",
-          "text-green-600",
-          "dark:bg-green-900/20",
-          "dark:text-green-400",
-        );
+        if (savingsSpan) savingsSpan.textContent = `-${savedPercent}%`;
+        else savingsBadge.textContent = `-${savedPercent}%`;
         savingsBadge.classList.remove(
-          "bg-red-50",
+          "from-red-50",
+          "to-rose-50",
+          "border-red-200/50",
+          "dark:from-red-900/30",
+          "dark:to-rose-900/30",
+          "dark:border-red-700/50",
           "text-red-600",
-          "dark:bg-red-900/20",
           "dark:text-red-400",
+        );
+        savingsBadge.classList.add(
+          "from-emerald-50",
+          "to-teal-50",
+          "border-emerald-200/50",
+          "dark:from-emerald-900/30",
+          "dark:to-teal-900/30",
+          "dark:border-emerald-700/50",
+          "text-emerald-600",
+          "dark:text-emerald-400",
         );
       } else {
-        savingsBadge.textContent = `+${Math.abs(savedPercent)}%`;
-        savingsBadge.classList.add(
-          "bg-red-50",
-          "text-red-600",
-          "dark:bg-red-900/20",
-          "dark:text-red-400",
-        );
+        if (savingsSpan)
+          savingsSpan.textContent = `+${Math.abs(savedPercent)}%`;
+        else savingsBadge.textContent = `+${Math.abs(savedPercent)}%`;
         savingsBadge.classList.remove(
-          "bg-green-50",
-          "text-green-600",
-          "dark:bg-green-900/20",
-          "dark:text-green-400",
+          "from-emerald-50",
+          "to-teal-50",
+          "border-emerald-200/50",
+          "dark:from-emerald-900/30",
+          "dark:to-teal-900/30",
+          "dark:border-emerald-700/50",
+          "text-emerald-600",
+          "dark:text-emerald-400",
+        );
+        savingsBadge.classList.add(
+          "from-red-50",
+          "to-rose-50",
+          "border-red-200/50",
+          "dark:from-red-900/30",
+          "dark:to-rose-900/30",
+          "dark:border-red-700/50",
+          "text-red-600",
+          "dark:text-red-400",
         );
       }
 
@@ -726,7 +1090,7 @@ const {
         a.click();
       };
     } else if (item.status === "error") {
-      statusText.textContent = labels.statusError;
+      statusText.innerHTML = `<span class="status-indicator w-2 h-2 rounded-full bg-red-500"></span>${labels.statusError}`;
       progressBar.classList.remove("animate-pulse");
       progressBar.classList.add("bg-red-500");
       // Re-enable settings even on error to allow retry

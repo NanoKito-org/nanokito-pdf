@@ -25,6 +25,14 @@ const labels = {
         quality: "Compression Level",
         grayscale: "Grayscale (B&W)",
         grayscaleDesc: "Converts to black & white for maximum reduction",
+        qualityScreen: "Smallest size, low res (72 dpi)",
+        qualityEbook: "Best balance of size & quality (150 dpi)",
+        qualityPrinter: "High quality for printing (300 dpi)",
+        statusOptimizing: "Optimizing PDF structure...",
+        statusProcessingPage: "Processing page {current} of {total}...",
+        statusError: "Error processing file",
+        zipping: "Zipping...",
+        footer: "Powered by Ghostscript. This tool is for educational/personal use (AGPL License).",
     },
     fr: {
         uploadTitle: "Compresser des fichiers PDF",
@@ -38,6 +46,14 @@ const labels = {
         quality: "Niveau de compression",
         grayscale: "Niveaux de gris (N&B)",
         grayscaleDesc: "Convertit en noir et blanc pour une réduction maximale",
+        qualityScreen: "Taille minimale, basse résolution (72 dpi)",
+        qualityEbook: "Meilleur équilibre taille/qualité (150 dpi)",
+        qualityPrinter: "Haute qualité pour impression (300 dpi)",
+        statusOptimizing: "Optimisation de la structure PDF...",
+        statusProcessingPage: "Traitement de la page {current} sur {total}...",
+        statusError: "Erreur lors du traitement",
+        zipping: "Compression en cours...",
+        footer: "Propulsé par Ghostscript. Cet outil est à usage éducatif/personnel (Licence AGPL).",
     },
 };
 
@@ -114,123 +130,6 @@ const pageDescription =
 
             {/* PDF Compressor Tool */}
             <PdfCompressor labels={currentLabels} />
-        </div>
-    </section>
-
-    {/* Trust / Features Section */}
-    <section
-        class="py-24 bg-[var(--color-card)] border-t border-[var(--color-border)] relative overflow-hidden"
-    >
-        <div class="container mx-auto px-4 max-w-5xl relative z-10">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {/* Feature 1: Private */}
-                <div
-                    class="group relative p-8 rounded-3xl bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm border border-white/20 dark:border-gray-800/50 hover:border-amber-500/50 hover:bg-white/80 dark:hover:bg-gray-900/80 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-amber-500/10"
-                >
-                    <div
-                        class="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent opacity-0 group-hover:opacity-100 rounded-3xl transition-opacity duration-500"
-                    >
-                    </div>
-                    <div
-                        class="relative z-10 flex flex-col items-center text-center"
-                    >
-                        <div
-                            class="p-4 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 ring-1 ring-amber-500/20"
-                        >
-                            <Shield className="w-8 h-8" />
-                        </div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-foreground)] mb-3 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors"
-                        >
-                            {t("trust.private")}
-                        </h3>
-                        <p
-                            class="text-[var(--color-muted-foreground)] leading-relaxed"
-                        >
-                            {t("trust.privateDesc")}
-                        </p>
-                    </div>
-                </div>
-
-                {/* Feature 2: Speed */}
-                <div
-                    class="group relative p-8 rounded-3xl bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm border border-white/20 dark:border-gray-800/50 hover:border-yellow-500/50 hover:bg-white/80 dark:hover:bg-gray-900/80 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-yellow-500/10"
-                >
-                    <div
-                        class="absolute inset-0 bg-gradient-to-br from-yellow-500/5 to-transparent opacity-0 group-hover:opacity-100 rounded-3xl transition-opacity duration-500"
-                    >
-                    </div>
-                    <div
-                        class="relative z-10 flex flex-col items-center text-center"
-                    >
-                        <div
-                            class="p-4 rounded-2xl bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 mb-6 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300 ring-1 ring-yellow-500/20"
-                        >
-                            <Zap className="w-8 h-8" />
-                        </div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-foreground)] mb-3 group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors"
-                        >
-                            {t("trust.speed")}
-                        </h3>
-                        <p
-                            class="text-[var(--color-muted-foreground)] leading-relaxed"
-                        >
-                            {t("trust.speedDesc")}
-                        </p>
-                    </div>
-                </div>
-
-                {/* Feature 3: No Signup */}
-                <div
-                    class="group relative p-8 rounded-3xl bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm border border-white/20 dark:border-gray-800/50 hover:border-orange-500/50 hover:bg-white/80 dark:hover:bg-gray-900/80 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-orange-500/10"
-                >
-                    <div
-                        class="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 rounded-3xl transition-opacity duration-500"
-                    >
-                    </div>
-                    <div
-                        class="relative z-10 flex flex-col items-center text-center"
-                    >
-                        <div
-                            class="p-4 rounded-2xl bg-orange-500/10 text-orange-600 dark:text-orange-400 mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 ring-1 ring-orange-500/20"
-                        >
-                            <CheckCircle className="w-8 h-8" />
-                        </div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-foreground)] mb-3 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors"
-                        >
-                            {t("trust.noSignup")}
-                        </h3>
-                        <p
-                            class="text-[var(--color-muted-foreground)] leading-relaxed"
-                        >
-                            {t("trust.noSignupDesc")}
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    {/* SEO Content Section */}
-    <section class="py-16 bg-[var(--color-background)]">
-        <div class="container mx-auto px-4 max-w-3xl">
-            <div class="prose prose-lg dark:prose-invert mx-auto">
-                <h2
-                    class="text-2xl font-bold text-[var(--color-foreground)] mb-6"
-                >
-                    {currentSeo.h2}
-                </h2>
-                <p
-                    class="text-[var(--color-muted-foreground)] mb-4"
-                    set:html={currentSeo.p1}
-                />
-                <p
-                    class="text-[var(--color-muted-foreground)]"
-                    set:html={currentSeo.p2}
-                />
-            </div>
         </div>
     </section>
 </Layout>

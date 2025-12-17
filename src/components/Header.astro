@@ -20,7 +20,7 @@ const t = useTranslations(lang);
                 href={`https://nanokito.com/${lang}/`}
                 class="text-lg sm:text-xl font-bold tracking-tight flex items-center gap-2.5 group shrink-0"
             >
-                 <img
+                <img
                     src="/logo.svg"
                     alt="NanoKito Logo"
                     class="w-8 h-8 sm:w-9 sm:h-9 transition-transform group-hover:scale-110 group-hover:rotate-6 duration-300"
@@ -52,7 +52,7 @@ const t = useTranslations(lang);
             <!-- Search Trigger -->
             <button
                 id="search-trigger-header"
-                class="p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors cursor-pointer"
+                class="hidden sm:block p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors cursor-pointer"
                 aria-label="Search"
             >
                 <Search className="w-5 h-5" />
@@ -61,7 +61,9 @@ const t = useTranslations(lang);
             <div class="hidden sm:block h-6 w-px bg-gray-200 dark:bg-gray-800">
             </div>
 
-            <ThemeToggle client:load />
+            <div class="hidden sm:block">
+                <ThemeToggle client:load />
+            </div>
 
             <LanguagePicker />
 
@@ -95,6 +97,17 @@ const t = useTranslations(lang);
                 {t("nav.tools")}
             </a>
             <div class="h-px bg-gray-100 dark:bg-gray-800 my-1"></div>
+
+            <div
+                class="flex items-center justify-between p-2 rounded-lg bg-gray-50 dark:bg-gray-900/50"
+            >
+                <span
+                    class="text-sm font-medium text-gray-500 dark:text-gray-400"
+                    >Theme</span
+                >
+                <ThemeToggle client:load />
+            </div>
+
             <button
                 id="search-trigger-mobile"
                 class="flex items-center gap-2 w-full text-left text-base font-medium text-gray-600 hover:text-amber-500 dark:text-gray-300 dark:hover:text-amber-400 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
