@@ -38,6 +38,7 @@ interface Props {
     statusError?: string;
     zipping?: string;
     footer?: string;
+    trustBadge?: string;
   };
 }
 
@@ -61,8 +62,8 @@ const {
     statusProcessingPage: "Processing page {current} of {total}...",
     statusError: "Error processing file. Engine may not be loaded.",
     zipping: "Zipping...",
-    footer:
-      "Powered by Ghostscript. This tool is for educational/personal use (AGPL License).",
+    footer: "",
+    trustBadge: "Private & Secure: Works offline. No data leaves your device.",
   },
 } = Astro.props;
 ---
@@ -186,9 +187,7 @@ const {
                 class="mt-8 flex items-center justify-center gap-2 text-xs text-slate-500 dark:text-slate-400 bg-slate-100/50 dark:bg-slate-800/50 px-3 py-1.5 rounded-lg backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50"
               >
                 <Lock className="w-3 h-3" />
-                <span
-                  >Private & Secure: Works offline. No data leaves your device.</span
-                >
+                <span>{labels.trustBadge}</span>
               </div>
             </div>
           </div>

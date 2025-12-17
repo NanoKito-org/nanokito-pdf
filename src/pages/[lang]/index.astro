@@ -33,6 +33,8 @@ const labels = {
         statusError: "Error processing file",
         zipping: "Zipping...",
         footer: "",
+        trustBadge:
+            "Private & Secure: Works offline. No data leaves your device.",
     },
     fr: {
         uploadTitle: "Compresser des fichiers PDF",
@@ -54,6 +56,8 @@ const labels = {
         statusError: "Erreur lors du traitement",
         zipping: "Compression en cours...",
         footer: "",
+        trustBadge:
+            "Privé & Sécurisé : Fonctionne hors ligne. Vos données restent sur votre appareil.",
     },
 };
 
@@ -171,6 +175,8 @@ const faqs = {
 };
 
 const currentFaqs = faqs[lang as "en" | "fr"];
+const faqTitle =
+    lang === "fr" ? "Foire Aux Questions" : "Frequently Asked Questions";
 ---
 
 <Layout title={`${pageTitle} | NanoKito`} description={pageDescription}>
@@ -271,7 +277,7 @@ const currentFaqs = faqs[lang as "en" | "fr"];
             <h2
                 class="text-3xl md:text-4xl font-bold text-center text-[var(--color-foreground)] mb-12"
             >
-                Frequently Asked Questions
+                {faqTitle}
             </h2>
             <div class="space-y-6">
                 {
