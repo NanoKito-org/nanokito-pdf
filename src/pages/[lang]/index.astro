@@ -122,6 +122,55 @@ const ghostscriptText =
     lang === "fr"
         ? "Cet outil utilise un portage WebAssembly de Ghostscript, la référence en traitement PDF, pour garantir la lisibilité de vos documents même à forte compression."
         : "This tool utilizes a WebAssembly port of Ghostscript, the gold standard in PDF processing, to ensure your documents remain readable even at high compression rates.";
+
+const faqs = {
+    en: [
+        {
+            q: "Is it truly secure to compress sensitive documents here?",
+            a: "Yes. Unlike most online tools, NanoKito is a <strong>secure PDF compressor</strong> that runs 100% in your browser. Your files never leave your device, eliminating the risk of server data breaches. It's safe for legal, medical, and financial documents.",
+        },
+        {
+            q: "How do you reduce PDF size without uploading?",
+            a: "We utilize a sophisticated <strong>WebAssembly (WASM)</strong> port of <strong>Ghostscript</strong>. This allows your browser to perform industrial-grade compression locally. You get the power of desktop software with the convenience of a web tool, making it the ultimate <strong>offline PDF tool</strong>.",
+        },
+        {
+            q: "Will compression lower the document quality?",
+            a: "Our <strong>Ghostscript</strong> engine is optimized to remove redundant data and downsample high-resolution images while preserving text clarity. You can choose different quality profiles (Screen, eBook, Printer) to balance between size reduction and visual fidelity.",
+        },
+        {
+            q: "Are there any file size limits?",
+            a: "Because the compression engine runs in your browser, performance depends on your device's available RAM. For most modern laptops and phones, files up to 100MB are processed smoothly. Extremely large files might require a computer with more memory.",
+        },
+        {
+            q: "Does this work on Mac, Windows, and Linux?",
+            a: "Absolutely. NanoKito is platform-independent. Whether you're on macOS, Windows 11, Linux, or even a Chromebook, you can <strong>reduce PDF size</strong> instantly without installing any software.",
+        },
+    ],
+    fr: [
+        {
+            q: "Est-ce vraiment sécurisé pour des documents sensibles ?",
+            a: "Oui. Contrairement à la plupart des outils en ligne, NanoKito est un <strong>compresseur PDF sécurisé</strong> qui fonctionne à 100% dans votre navigateur. Vos fichiers ne quittent jamais votre appareil, éliminant tout risque de fuite de données. Idéal pour les documents légaux ou médicaux.",
+        },
+        {
+            q: "Comment réduire la taille sans envoyer le fichier ?",
+            a: "Nous utilisons un portage <strong>WebAssembly (WASM)</strong> de <strong>Ghostscript</strong>. Cela permet à votre navigateur d'effectuer une compression de niveau industriel localement. C'est l'outil <strong>PDF hors ligne</strong> ultime combinant puissance et confidentialité.",
+        },
+        {
+            q: "La compression réduit-elle la qualité ?",
+            a: "Notre moteur <strong>Ghostscript</strong> est optimisé pour supprimer les données redondantes tout en préservant la clarté du texte. Vous pouvez choisir différents profils (Écran, eBook, Impression) pour équilibrer réduction de taille et qualité visuelle.",
+        },
+        {
+            q: "Y a-t-il des limites de taille de fichier ?",
+            a: "Comme le moteur tourne dans votre navigateur, la performance dépend de la RAM de votre appareil. Sur la plupart des ordinateurs modernes, les fichiers jusqu'à 100 Mo sont traités sans problème.",
+        },
+        {
+            q: "Cela fonctionne-t-il sur Mac, Windows et Linux ?",
+            a: "Absolument. NanoKito est indépendant de la plateforme. Que vous soyez sur macOS, Windows 11, Linux ou Chromebook, vous pouvez <strong>réduire la taille de vos PDF</strong> instantanément sans rien installer.",
+        },
+    ],
+};
+
+const currentFaqs = faqs[lang as "en" | "fr"];
 ---
 
 <Layout title={`${pageTitle} | NanoKito`} description={pageDescription}>
@@ -192,12 +241,52 @@ const ghostscriptText =
             </div>
 
             {/* Ghostscript Mention */}
-            <div class="mt-16 text-center max-w-3xl mx-auto">
+            <div class="mt-16 text-center max-w-3xl mx-auto mb-24">
                 <p
                     class="text-lg text-[var(--color-muted-foreground)] leading-relaxed bg-[var(--color-card)]/30 backdrop-blur-sm p-6 rounded-2xl border border-[var(--color-border)] inline-block"
                 >
                     {ghostscriptText}
                 </p>
+            </div>
+        </div>
+    </section>
+
+    {/* FAQ Section */}
+    <section
+        class="py-16 lg:py-24 border-t border-[var(--color-border)] relative overflow-hidden"
+    >
+        {/* Decorative Background Elements */}
+        <div class="absolute inset-0 -z-10 bg-[var(--color-background)]">
+            <div
+                class="absolute bottom-0 right-0 w-[500px] h-[500px] bg-amber-400/20 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"
+            >
+            </div>
+            <div
+                class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-red-400/20 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"
+            >
+            </div>
+        </div>
+
+        <div class="container mx-auto px-4 max-w-4xl relative">
+            <h2
+                class="text-3xl md:text-4xl font-bold text-center text-[var(--color-foreground)] mb-12"
+            >
+                Frequently Asked Questions
+            </h2>
+            <div class="space-y-6">
+                {
+                    currentFaqs.map((faq) => (
+                        <div class="bg-[var(--color-card)]/50 backdrop-blur-md rounded-2xl p-6 md:p-8 border border-[var(--color-border)] hover:bg-[var(--color-card)]/80 transition-all duration-300 shadow-sm hover:shadow-md">
+                            <h3 class="text-xl font-bold text-[var(--color-foreground)] mb-3">
+                                {faq.q}
+                            </h3>
+                            <p
+                                class="text-[var(--color-muted-foreground)] leading-relaxed text-base"
+                                set:html={faq.a}
+                            />
+                        </div>
+                    ))
+                }
             </div>
         </div>
     </section>
