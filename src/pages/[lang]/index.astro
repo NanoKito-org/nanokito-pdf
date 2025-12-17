@@ -11,6 +11,7 @@ export function getStaticPaths() {
 
 const { lang } = Astro.params;
 const t = useTranslations(lang as keyof typeof languages);
+const baseUrl = "https://pdf.nanokito.com";
 
 // PDF Compressor labels
 const labels = {
@@ -78,11 +79,33 @@ const seo = {
 
 const currentSeo = seo[lang as "en" | "fr"];
 
-const pageTitle = lang === "fr" ? "Compresseur PDF" : "PDF Compressor";
+const pageTitle =
+    lang === "fr"
+        ? "Compresser PDF Privé - Réducteur PDF Client"
+        : "Compress PDF Private - Client-side PDF Reducer";
 const pageDescription =
     lang === "fr"
-        ? "Compressez vos fichiers PDF localement en rastérisant les pages. Sans envoi au serveur."
-        : "Compress PDF files locally by rasterizing pages. No server uploads.";
+        ? "Un compresseur PDF privé, sécurisé et instantané qui fonctionne entièrement dans le navigateur via WebAssembly (Ghostscript). Réduisez la taille de vos PDF sans envoi serveur."
+        : "A private, secure, and instant PDF compressor that runs entirely in the browser using WebAssembly (Ghostscript). Reduce PDF size without uploading. 100% Client-side.";
+
+const schema = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "NanoKito PDF Compressor",
+    applicationCategory: "UtilitiesApplication",
+    operatingSystem: "Any",
+    offers: {
+        "@type": "Offer",
+        price: "0.00",
+        priceCurrency: "USD",
+    },
+    featureList: [
+        "No server uploads",
+        "Client-side processing",
+        "Ghostscript engine",
+        "Offline capable",
+    ],
+};
 
 const features = {
     en: [
@@ -179,7 +202,21 @@ const faqTitle =
     lang === "fr" ? "Foire Aux Questions" : "Frequently Asked Questions";
 ---
 
-<Layout title={`${pageTitle} | NanoKito`} description={pageDescription}>
+<Layout title={pageTitle} description={pageDescription}>
+    {/* SEO & Head Tags */}
+    <link slot="head" rel="canonical" href={`${baseUrl}/${lang}/`} />
+    <meta slot="head" property="og:type" content="website" />
+    <meta slot="head" property="og:url" content={`${baseUrl}/${lang}/`} />
+    <meta slot="head" property="og:title" content={pageTitle} />
+    <meta slot="head" property="og:description" content={pageDescription} />
+    <meta slot="head" property="og:site_name" content="NanoKito PDF" />
+    <meta slot="head" property="article:author" content="NanoKito" />
+    <meta slot="head" name="twitter:card" content="summary_large_image" />
+    <script
+        slot="head"
+        type="application/ld+json"
+        set:html={JSON.stringify(schema)}
+    />
     {/* Hero Section - PDF Compressor Focused */}
     <section class="relative py-16 lg:py-24 overflow-hidden">
         {/* Background */}

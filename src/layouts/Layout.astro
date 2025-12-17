@@ -23,15 +23,13 @@ const { title, description = "Privacy-First Tools. No Server Uploads." } =
 		<meta name="description" content={description} />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
+
 		<ThemeScript />
 		<title>{title} | NanoKito</title>
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link
-			href="https://fonts.googleapis.com/css2?family=Inter:tight,wght@400;500;600;700&display=swap"
-			rel="stylesheet"
-		/>
+		<link rel="stylesheet" />
+		<slot name="head" />
 	</head>
 	<body
 		class="bg-[var(--color-background)] text-[var(--color-foreground)] min-h-screen flex flex-col font-sans antialiased selection:bg-[var(--color-primary)]/20 selection:text-[var(--color-primary)] relative overflow-x-hidden"
